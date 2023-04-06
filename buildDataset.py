@@ -11,12 +11,8 @@ import random
 import os
 import matplotlib
 import matplotlib.pyplot as plt
-#import sys
-#import shlex
-#from colorama import init, Fore
-#init(autoreset = True)
 import math
-
+from termcolor import colored, cprint
 #print(sys.executable, ' '.join(map(shlex.quote, sys.argv)))
 
 overwriteDataFrame = False
@@ -44,7 +40,7 @@ logFile.write('Input files path: ' + dfPath + 'CxAOD tag: ' + tag + '\nAnalysis:
 DictDSID = {}
 DSIDfileName = 'DSIDtoMass.txt'
 with open(DSIDfileName) as DSIDfile:
-    print('Reading DSID - mass correspondance from ' + DSIDfileName)
+    cprint('Reading DSID - mass correspondance from ' + DSIDfileName, 'green')
     lines = DSIDfile.readlines()
     for line in lines:
         DictDSID[int(line.split(':')[0])] = int(line.split(':')[1])
@@ -69,24 +65,20 @@ for target in inputOrigins:
     if not overwriteDataFrame:
         if os.path.isfile(fileName):
             if target == signal:
-                print('Found signal dataframe: loading ' + fileName)
+                cprint('Found signal dataframe: loading ' + fileName, 'green')
                 dataFrameSignal = pd.read_pickle(fileName)
             else:
-                print('Found background dataframe: loading ' + fileName)
+                cprint('Found background dataframe: loading ' + fileName, 'green')
                 dataFrameBkg.append(pd.read_pickle(fileName))
 
     ### Creating dataframe if not found or overwrite flag is true
     if overwriteDataFrame or not os.path.isfile(fileName):
         ### Defining local dataframe (we might have found only one among many dataframes)
         partialDataFrameBkg = []
-        #for file in os.listdir(dfPath):
         for file in os.listdir(dfPath):
-            #print(dfPath + file)
             ### Loading input file
             if file.startswith(target) and file.endswith('.pkl'):
-                #print('Loading ' + dfPath + file)
-                #inputDf = pd.read_pickle(dfPath + file)
-                print('Loading ' + dfPath + file)
+                cprint('Loading ' + dfPath + file, 'green')
                 inputDf = pd.read_pickle(dfPath + file)
                 ### Selecting events according to merged/resolved regime and ggF/VBF channel
                 inputDf = SelectEvents(inputDf, channel, analysis, preselectionCuts, signal)
@@ -98,6 +90,7 @@ for target in inputOrigins:
                     dataFrameSignal.append(inputDf)
                 else:
                     partialDataFrameBkg.append(inputDf)
+
         ### Concatening and saving signal and background dataframes
         if target == signal:
             dataFrameSignal = pd.concat(dataFrameSignal, ignore_index = True)
@@ -109,7 +102,7 @@ for target in inputOrigins:
             ### Appending the local background dataframe to the final one
             dataFrameBkg.append(partialDataFrameBkg)
 
-        print('Saved ' + fileName)
+        cprint('Saved ' + fileName, 'green')
 
 ### Concatening the global background dataframe
 dataFrameBkg = pd.concat(dataFrameBkg, ignore_index = True)
@@ -132,7 +125,7 @@ dataFrameSignal = dataFrameSignal.assign(mass = massesSignal)
 ### Cutting signal events according to their mass and the type of analysis
 dataFrameSignal = CutMasses(dataFrameSignal, analysis)
 massesSignalList = list(set(list(dataFrameSignal['mass'])))
-print('Masses in the signal sample: ' + str(np.sort(np.array(massesSignalList))) + ' GeV (' + str(len(massesSignalList)) + ')')
+cprint('Masses in the signal sample: ' + str(np.sort(np.array(massesSignalList))) + ' GeV (' + str(len(massesSignalList)) + ')', 'blue')
 logFile.write('\nMasses in the signal sample: ' + str(np.sort(np.array(massesSignalList))) + ' GeV (' + str(len(massesSignalList)) + ')')
 
 '''
@@ -152,7 +145,7 @@ dataFrame = pd.concat([dataFrameSignal, dataFrameBkg], ignore_index = True)
 ### Saving number of events for each origin
 for origin in inputOrigins:
     logFile.write('\nNumber of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
-    print('Number of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
+    cprint('Number of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)', 'blue')
 
 
 ### Computing derived variables
@@ -164,6 +157,8 @@ dataFrame = dataFrame[variablesToSave + variablesToDerive]
 ### Removing events with high absoulte MC weights
 meanWeight = dataFrame['weight'].mean()
 stdWeight = dataFrame['weight'].std()
+selectionString = 'abs(MCweight - meanMCweight) <= 5 * std(MCweight)'
+cprint('Applying cut \'' + selectionString + '\'', 'white', 'on_green')
 selection = 'abs(weight - ' + str(meanWeight) + ') <= 5 * ' + str(stdWeight)
 dataFrame = dataFrame.query(selection)
 
@@ -171,20 +166,21 @@ dataFrame = dataFrame.query(selection)
 dataFrame = ShufflingData(dataFrame)
 
 ### Saving number of events for each origin after cutting on weight
-logFile.write('Number of events after applying cut \'' + selection + '\'')
+logFile.write('Number of events after applying cut \'' + selectionString + '\'')
+cprint('Number of events after applying the cut', 'blue')
 for origin in inputOrigins:
     logFile.write('\nNumber of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
-    print('Number of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
+    cprint('Number of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)', 'blue')
 
 ### Saving the combined dataframe
 outputFileName = '/MixData_' + fileCommonName + '.pkl'
 dataFrame.to_pickle(outputDir + outputFileName)
-print('Saved ' + outputDir + outputFileName)
+cprint('Saved ' + outputDir + outputFileName, 'green')
 logFile.write('\nSaved combined (signal and background) dataframe in ' + outputDir + outputFileName)
 
 ### Closing the log file
 logFile.close()
-print('Saved ' + logFileName)
+cprint('Saved ' + logFileName, 'green')
 
 ### Drawing histogram of variables
 if drawPlots:
