@@ -13,8 +13,8 @@ fileNameCreateScoresBranch = 'addScoreBranch.py'#'createScoresBranch.py'
 ### Reading the command line
 from argparse import ArgumentParser
 import sys
-from colorama import init, Fore
-init(autoreset = True)
+#from colorama import init, Fore
+#init(autoreset = True)
 
 def ReadArgParser():
     parser = ArgumentParser(add_help = False)
@@ -47,64 +47,64 @@ def ReadArgParser():
 
     analysis = args.Analysis
     if args.Analysis is None and fileNameSaveToPkl not in sys.argv[0] and fileNameComputeSignificance not in sys.argv[0] and 'computeSignificance_2.py' not in sys.argv[0]:
-        parser.error(Fore.RED + 'Requested type of analysis (either \'merged\' or \'resolved\')')
+        parser.error('Requested type of analysis (either \'merged\' or \'resolved\')')
     elif args.Analysis and analysis != 'resolved' and analysis != 'merged':
-        parser.error(Fore.RED + 'Analysis can be either \'merged\' or \'resolved\'')
+        parser.error('Analysis can be either \'merged\' or \'resolved\'')
     channel = args.Channel
     if args.Channel is None and fileNameSaveToPkl not in sys.argv[0] and fileNameComputeSignificance not in sys.argv[0] and 'computeSignificance_2.py' not in sys.argv[0]:
-        parser.error(Fore.RED + 'Requested channel (either \'ggF\' or \'VBF\')')
+        parser.error('Requested channel (either \'ggF\' or \'VBF\')')
     elif args.Channel and channel != 'ggF' and channel != 'VBF':
-        parser.error(Fore.RED + 'Channel can be either \'ggF\' or \'VBF\'')
+        parser.error('Channel can be either \'ggF\' or \'VBF\'')
     signal = args.Signal
     if args.Signal is None and fileNameSaveToPkl not in sys.argv[0]:
-        parser.error(Fore.RED + 'Requested type of signal (\'Radion\', \'RSG\', \'HVTWZ\')')
+        parser.error('Requested type of signal (\'Radion\', \'RSG\', \'HVTWZ\')')
     if args.Signal and signal != 'Radion' and signal != 'RSG' and signal != 'HVTWZ':
-        parser.error(Fore.RED + 'Signal can be only \'Radion\', \'RSG\' or \'HVTWZ\'')
+        parser.error('Signal can be only \'Radion\', \'RSG\' or \'HVTWZ\'')
     if args.Channel and channel == 'VBF':
         signal = channel + signal
     '''
     jetCollection = args.JetCollection
     if args.JetCollection is None:
-        parser.error(Fore.RED + 'Requested jet collection (\'TCC\' or \'UFO_PFLOW\')')
+        parser.error('Requested jet collection (\'TCC\' or \'UFO_PFLOW\')')
     elif args.JetCollection != 'TCC' and args.JetCollection != 'UFO_PFLOW':
-        parser.error(Fore.RED + 'Jet collection can be \'TCC\', \'UFO_PFLOW\'')
+        parser.error('Jet collection can be \'TCC\', \'UFO_PFLOW\'')
     '''
     background = args.Background.split()
     for bkg in background:
         if (bkg !=  'Zjets' and bkg != 'Wjets' and bkg != 'stop' and bkg != 'Diboson' and bkg != 'ttbar' and bkg != 'all'):
-            parser.error(Fore.RED + 'Background can be \'Zjets\', \'Wjets\', \'stop\', \'Diboson\', \'ttbar\' or \'all\'')
+            parser.error('Background can be \'Zjets\', \'Wjets\', \'stop\', \'Diboson\', \'ttbar\' or \'all\'')
     backgroundString = 'all'
     if args.Background != 'all':
         backgroundString = '_'.join([str(item) for item in background])
     trainingFraction = float(args.TrainingFraction)
     if args.TrainingFraction and (trainingFraction < 0. or trainingFraction > 1.):
-        parser.error(Fore.RED + 'Training fraction must be between 0 and 1')
+        parser.error('Training fraction must be between 0 and 1')
     preselectionCuts = args.PreselectionCuts
     if args.PreselectionCuts is None:
         preselectionCuts = 'none'
     hpOptimization = bool(int(args.hpOptimization))
     numberOfNodes = int(args.Nodes)
     if args.Nodes and numberOfNodes < 1:
-        parser.error(Fore.RED + 'Number of nodes must be integer and strictly positive')
+        parser.error('Number of nodes must be integer and strictly positive')
     numberOfLayers = int(args.Layers)
     if args.Layers and numberOfLayers < 1:
-        parser.error(Fore.RED + 'Number of layers must be integer and strictly positive')
+        parser.error('Number of layers must be integer and strictly positive')
     numberOfEpochs = int(args.Epochs)
     if args.Epochs and numberOfEpochs < 1:
-        parser.error(Fore.RED + 'Number of maximum epochs must be integer and strictly positive')
+        parser.error('Number of maximum epochs must be integer and strictly positive')
     validationFraction = float(args.Validation)
     if args.Validation and (validationFraction < 0. or validationFraction > 1.):
-        parser.error(Fore.RED + 'Validation fraction must be between 0 and 1')
+        parser.error('Validation fraction must be between 0 and 1')
     dropout = float(args.Dropout)
     if args.Dropout and (dropout < 0. or dropout > 1.):
-        parser.error(Fore.RED + 'Dropout must be between 0 and 1')
+        parser.error('Dropout must be between 0 and 1')
     mass = args.Mass.split()
     doTrain = bool(int(args.doTrain))
     if args.doTrain and (doTrain != 0 and doTrain != 1):
-        parser.error(Fore.RED + 'doTrain can only be 1 (to perform the training) or 0')
+        parser.error('doTrain can only be 1 (to perform the training) or 0')
     doTest = bool(int(args.doTest))
     if args.doTest and (doTest != 0 and doTest != 1):
-        parser.error(Fore.RED + 'doTest can only be 1 (to perform the test) or 0')
+        parser.error('doTest can only be 1 (to perform the test) or 0')
     loop = int(args.loop)
     trainSet = args.trainSet
     tag = args.tag
@@ -117,48 +117,49 @@ def ReadArgParser():
     configurationFile = args.config
 
     if fileNameSaveToPkl in sys.argv[0]:
-        print(Fore.BLUE + '           tag = ' + tag)
-        #print(Fore.BLUE + 'jet collection = ' + jetCollection)
+        print('           tag = ' + tag)
+        #print('jet collection = ' + jetCollection)
         return tag
 
     if fileNameBuildDataSet in sys.argv[0]:
-        print(Fore.BLUE + '                    tag = ' + tag)
-        #print(Fore.BLUE + '         jet collection = ' + jetCollection)
-        print(Fore.BLUE + '          background(s) = ' + str(backgroundString))
-        print(Fore.BLUE + '              drawPlots = ' + str(drawPlots))
+        print('                    tag = ' + tag)
+        #print('         jet collection = ' + jetCollection)
+        print('          background(s) = ' + str(backgroundString))
+        print('              drawPlots = ' + str(drawPlots))
+        print('                 signal = ' + str(signal))
         return tag, analysis, channel, preselectionCuts, signal, backgroundString, drawPlots
 
     if fileNameSplitDataSet in sys.argv[0] or fileNamePlots in sys.argv[0]:
-        print(Fore.BLUE + '              tag = ' + tag)
-        #print(Fore.BLUE + '   jet collection = ' + jetCollection)
-        print(Fore.BLUE + '       background = ' + str(backgroundString))
-        print(Fore.BLUE + 'training fraction = ' + str(trainingFraction))
-        print(Fore.BLUE + '        drawPlots = ' + str(drawPlots))
+        print('              tag = ' + tag)
+        #print('   jet collection = ' + jetCollection)
+        print('       background = ' + str(backgroundString))
+        print('training fraction = ' + str(trainingFraction))
+        print('        drawPlots = ' + str(drawPlots))
         return tag, analysis, channel, preselectionCuts, backgroundString, signal, trainingFraction, drawPlots
 
     if fileNameBuildDNN in sys.argv[0] or fileNameBuildPDNN in sys.argv[0]:# or sys.argv[0] == fileName6):
-        print(Fore.BLUE + '               background(s) = ' + str(backgroundString))
-        print(Fore.BLUE + '               test mass(es) = ' + str(mass))
-        print(Fore.BLUE + '           training fraction = ' + str(trainingFraction))
-        print(Fore.BLUE + 'hyperparameters optimization = ' + str(hpOptimization))
-        print(Fore.BLUE + '                     doTrain = ' + str(doTrain))
-        print(Fore.BLUE + '                      doTest = ' + str(doTest))
-        print(Fore.BLUE + '         validation fraction = ' + str(validationFraction))
-        print(Fore.BLUE + '    number of maximum epochs = ' + str(numberOfEpochs))
-        print(Fore.BLUE + '                    trainSet = ' + str(trainSet))
-        print(Fore.BLUE + '          configuration file = ' + str(configurationFile))
+        print('               background(s) = ' + str(backgroundString))
+        print('               test mass(es) = ' + str(mass))
+        print('           training fraction = ' + str(trainingFraction))
+        print('hyperparameters optimization = ' + str(hpOptimization))
+        print('                     doTrain = ' + str(doTrain))
+        print('                      doTest = ' + str(doTest))
+        print('         validation fraction = ' + str(validationFraction))
+        print('    number of maximum epochs = ' + str(numberOfEpochs))
+        print('                    trainSet = ' + str(trainSet))
+        print('          configuration file = ' + str(configurationFile))
         if not hpOptimization:
-            print(Fore.BLUE + '             number of nodes = ' + str(numberOfNodes))
-            print(Fore.BLUE + '     number of hidden layers = ' + str(numberOfLayers))
-            print(Fore.BLUE + '                     dropout = ' + str(dropout))
+            print('             number of nodes = ' + str(numberOfNodes))
+            print('     number of hidden layers = ' + str(numberOfLayers))
+            print('                     dropout = ' + str(dropout))
         return tag, analysis, channel, preselectionCuts, backgroundString, trainingFraction, signal, numberOfNodes, numberOfLayers, numberOfEpochs, validationFraction, dropout, mass, doTrain, doTest, loop, hpOptimization, drawPlots, trainSet, doStudyLRpatience, configurationFile
 
     if fileNameComputeSignificance in sys.argv[0] or 'computeSignificance_2.py' in sys.argv[0]:
         return tag, regime, preselectionCuts, signal, backgroundString
 
     if fileNameCreateScoresBranch in sys.argv[0]:
-        print(Fore.BLUE + '          background(s) = ' + str(backgroundString))
-        print(Fore.BLUE + '                 signal = ' + str(signal))
+        print('          background(s) = ' + str(backgroundString))
+        print('                 signal = ' + str(signal))
         return tag, analysis, channel, preselectionCuts, signal, backgroundString
 
 ### Reading from the configuration file
@@ -167,8 +168,8 @@ import shutil
 
 def ReadConfigSaveToPkl(tag):#, jetCollection):
     #configurationFile = 'Configuration_' + jetCollection + '_' + tag + '.ini'
-    configurationFile = 'Configuration_' + '_' + tag + '.ini'
-    print(Fore.GREEN  + 'Reading configuration file: ' + configurationFile)
+    configurationFile = 'Configuration_' + tag + '.ini'
+    print('Reading configuration file: ' + configurationFile)
     config = configparser.ConfigParser()
     config.read(configurationFile)
     ntuplePath = config.get('config', 'ntuplePath')
@@ -176,15 +177,15 @@ def ReadConfigSaveToPkl(tag):#, jetCollection):
     dfPath = config.get('config', 'dfPath')
     dfPath += tag + '/'# + jetCollection + '/'
     rootBranchSubSample = ast.literal_eval(config.get('config', 'rootBranchSubSample'))
-    #print (format('Output directory: ' + Fore.GREEN + dfPath), checkCreateDir(dfPath))
+    #print (format('Output directory: ' + dfPath), checkCreateDir(dfPath))
     #shutil.copyfile(configurationFile, dfPath + configurationFile)
     return ntuplePath, inputFiles, dfPath, rootBranchSubSample
 
-#def ReadConfig(tag, analysis, jetCollection, signal):
-def ReadConfig(tag, analysis, signal, configFile):
-    #configurationFile = 'Configuration_' + tag + '.ini'
-    configurationFile = configFile
-    print(Fore.GREEN  + 'Reading configuration file: ' + configurationFile)
+def ReadConfig(tag, analysis, signal):
+#def ReadConfig(tag, analysis, signal, configFile):
+    configurationFile = 'Configuration_' + tag + '.ini'
+    #configurationFile = configFile
+    print('Reading configuration file: ' + configurationFile)
     config = configparser.ConfigParser()
     config.read(configurationFile)
     inputFiles = ast.literal_eval(config.get('config', 'inputFiles'))
@@ -228,9 +229,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'} ---> '3' to s
 def checkCreateDir(dir):
     if not os.path.isdir(dir):
         os.makedirs(dir)
-        return Fore.RED + ' (created)'
+        return ' (created)'
     else:
-        return Fore.RED + ' (already there)'
+        return ' (already there)'
 
 ### Functions to enable or disable 'print' calls
 def blockPrint():
@@ -245,12 +246,12 @@ import numpy as np
 #def LoadData(dfPath, tag, jetCollection, signal, analysis, channel, background, trainingFraction, preselectionCuts, InputFeatures, iLoop):
 def LoadData(dfPath, tag, signal, analysis, channel, background, trainingFraction, preselectionCuts, InputFeatures, iLoop):
     fileCommonName = tag + '_' + analysis + '_' + channel + '_' + preselectionCuts + '_' + str(signal) + '_' + background + '_' + str(trainingFraction) + 't'
-    print(Fore.GREEN + 'Loading ' + dfPath + 'data_train_' + fileCommonName + '.pkl')
+    print('Loading ' + dfPath + 'data_train_' + fileCommonName + '.pkl')
     dataTrain = pd.read_pickle(dfPath + '/data_train_' + fileCommonName + '.pkl')
-    #dataTrain = dataTrain.query('Pass_MergHP_GGF_WZ_SR == True or Pass_MergLP_GGF_WZ_SR == True or Pass_MergHP_VBF_WZ_SR == True or Pass_MergLP_VBF_WZ_SR == True')
+    #dataTrain = dataTrain.query('Pass_VV2Lep_MergHP_GGF_WZ_SR == True or Pass_VV2Lep_MergLP_GGF_WZ_SR == True or Pass_VV2Lep_MergHP_VBF_WZ_SR == True or Pass_VV2Lep_MergLP_VBF_WZ_SR == True')
     #print('# of events in dataTrain: ' + str(len(dataTrain)))
     '''
-    passCols = ['Pass_MergHP_GGF_ZZ_Tag_ZCR', 'Pass_MergHP_GGF_ZZ_Untag_ZCR', 'Pass_MergLP_GGF_ZZ_Tag_ZCR', 'Pass_MergLP_GGF_ZZ_Untag_ZCR', 'Pass_MergHP_GGF_WZ_ZCR', 'Pass_MergLP_GGF_WZ_ZCR', 'Pass_MergHP_VBF_WZ_ZCR', 'Pass_MergHP_VBF_ZZ_ZCR', 'Pass_MergLP_VBF_WZ_ZCR', 'Pass_MergLP_VBF_ZZ_ZCR']
+    passCols = ['Pass_VV2Lep_MergHP_GGF_ZZ_Tag_ZCR', 'Pass_VV2Lep_MergHP_GGF_ZZ_Untag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_Tag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_Untag_ZCR', 'Pass_VV2Lep_MergHP_GGF_WZ_ZCR', 'Pass_VV2Lep_MergLP_GGF_WZ_ZCR', 'Pass_VV2Lep_MergHP_VBF_WZ_ZCR', 'Pass_VV2Lep_MergHP_VBF_ZZ_ZCR', 'Pass_VV2Lep_MergLP_VBF_WZ_ZCR', 'Pass_VV2Lep_MergLP_VBF_ZZ_ZCR']
     for col in passCols:
         dataTrain[col].replace(to_replace = [False, True], value = [0, 1], inplace = True)
         sumCol = dataTrain[col].sum()
@@ -260,7 +261,7 @@ def LoadData(dfPath, tag, signal, analysis, channel, background, trainingFractio
     #X_train = np.array(dataTrain[InputFeatures].values).astype(np.float32)
     #y_train = np.array(dataTrain['isSignal'].values).astype(np.float32)
     #w_train = dataTrain['train_weight'].values
-    print(Fore.GREEN + 'Loading ' + dfPath + 'data_test_' + fileCommonName + '.pkl')
+    print('Loading ' + dfPath + 'data_test_' + fileCommonName + '.pkl')
     dataTest = pd.read_pickle(dfPath + '/data_test_' + fileCommonName + '.pkl')
     #X_test = np.array(dataTest[InputFeatures].values).astype(np.float32)
     #y_test = np.array(dataTest['isSignal'].values).astype(np.float32)
@@ -276,16 +277,16 @@ def WriteLogFile(tag, ntuplePath, InputFeatures, dfPath, hpOptimization, doTrain
 
 def SelectEvents(dataFrame, channel, analysis, preselectionCuts, signal):
     ### Selecting events according to type of analysis and channel
-    selectionMergedGGF = 'Pass_MergHP_GGF_ZZ_2btag_SR == True or Pass_MergHP_GGF_ZZ_01btag_SR == True or Pass_MergHP_GGF_WZ_SR == True or Pass_MergLP_GGF_ZZ_2btag_SR == True or Pass_MergLP_GGF_ZZ_01btag_SR == True or Pass_MergLP_GGF_WZ_SR == True or Pass_MergHP_GGF_ZZ_2btag_ZCR == True or Pass_MergHP_GGF_ZZ_01btag_ZCR == True or Pass_MergHP_GGF_WZ_ZCR == True or Pass_MergLP_GGF_ZZ_2btag_ZCR == True or Pass_MergLP_GGF_ZZ_01btag_ZCR == True or Pass_MergLP_GGF_WZ_ZCR == True'# or Pass_MergHP_GGF_ZZ_01btag_TCR == True or Pass_MergHP_GGF_ZZ_2btag_TCR == True or Pass_MergHP_GGF_WZ_TCR == True or Pass_MergLP_GGF_ZZ_01btag_TCR == True or Pass_MergLP_GGF_ZZ_2btag_TCR == True or Pass_MergLP_GGF_WZ_TCR == True'
-    selectionMergedGGFZZLPuntagSR = 'Pass_MergLP_GGF_ZZ_01btag_SR == True and Pass_MergHP_GGF_ZZ_2btag_SR == False and Pass_MergHP_GGF_ZZ_01btag_SR == False and Pass_MergHP_GGF_WZ_SR == False and Pass_MergLP_GGF_ZZ_2btag_SR == False and Pass_MergHP_GGF_ZZ_2btag_ZCR == False and Pass_MergHP_GGF_WZ_ZCR == False and Pass_MergHP_GGF_ZZ_01btag_ZCR == False and Pass_MergLP_GGF_ZZ_2btag_ZCR == False and Pass_MergLP_GGF_ZZ_01btag_ZCR == False and Pass_MergLP_GGF_WZ_SR == False and Pass_MergLP_GGF_WZ_ZCR == False'
-    selectionMergedVBF = 'Pass_MergHP_VBF_WZ_SR == True or Pass_MergHP_VBF_ZZ_SR == True or Pass_MergLP_VBF_WZ_SR == True or Pass_MergLP_VBF_ZZ_SR == True or Pass_MergHP_VBF_WZ_ZCR == True or Pass_MergHP_VBF_ZZ_ZCR == True or Pass_MergLP_VBF_WZ_ZCR == True or Pass_MergLP_VBF_ZZ_ZCR == True'# or Pass_MergHP_VBF_WZ_TCR == True or Pass_MergHP_VBF_ZZ_TCR == True or Pass_MergLP_VBF_WZ_TCR == True or Pass_MergLP_VBF_ZZ_TCR == True'
-    #selectionMergedVBF = 'Pass_MergHP_VBF_ZZ_SR == True or Pass_MergLP_VBF_ZZ_SR == True or Pass_MergHP_VBF_ZZ_ZCR == True or Pass_MergLP_VBF_ZZ_ZCR == True'# or Pass_MergHP_VBF_WZ_TCR == True or Pass_MergHP_VBF_ZZ_TCR == True or Pass_MergLP_VBF_WZ_TCR == True or Pass_MergLP_VBF_ZZ_TCR == True'
-    selectionResolvedGGF = 'Pass_Res_GGF_WZ_SR == True or Pass_Res_GGF_ZZ_2btag_SR == True or Pass_Res_GGF_ZZ_01btag_SR == True or Pass_Res_GGF_WZ_ZCR == True or Pass_Res_GGF_ZZ_2btag_ZCR == True or Pass_Res_GGF_ZZ_01btag_ZCR == True'# or Pass_Res_GGF_WZ_TCR == True or Pass_Res_GGF_ZZ_2btag_TCR == True or Pass_Res_GGF_ZZ_01btag_TCR == True'
-    selectionResolvedVBF = 'Pass_Res_VBF_WZ_SR == True or Pass_Res_VBF_ZZ_SR == True or Pass_Res_VBF_WZ_ZCR == True or Pass_Res_VBF_ZZ_ZCR == True'# or Pass_Res_VBF_WZ_TCR == True or Pass_Res_VBF_ZZ_TCR == True'
-    selectionResolved = 'Pass_Res_GGF_WZ_SR == True or Pass_Res_GGF_ZZ_2btag_SR == True or Pass_Res_GGF_ZZ_01btag_SR == True or Pass_Res_GGF_WZ_ZCR == True or Pass_Res_GGF_ZZ_2btag_ZCR == True or Pass_Res_GGF_ZZ_01btag_ZCR == True or Pass_Res_VBF_WZ_SR == True or Pass_Res_VBF_ZZ_SR == True or Pass_Res_VBF_WZ_ZCR == True or Pass_Res_VBF_ZZ_ZCR == True'
+    selectionMergedGGF = 'Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_MergHP_GGF_WZ_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_MergLP_GGF_WZ_SR == True or Pass_VV2Lep_MergHP_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_ZCR == True or Pass_VV2Lep_MergHP_GGF_WZ_ZCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_ZCR == True or Pass_VV2Lep_MergLP_GGF_WZ_ZCR == True'# or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_TCR == True or Pass_VV2Lep_MergHP_GGF_ZZ_2btag_TCR == True or Pass_VV2Lep_MergHP_GGF_WZ_TCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_TCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_TCR == True or Pass_VV2Lep_MergLP_GGF_WZ_TCR == True'
+    selectionMergedGGFZZLPuntagSR = 'Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR == True and Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR == False and Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR == False and Pass_VV2Lep_MergHP_GGF_WZ_SR == False and Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR == False and Pass_VV2Lep_MergHP_GGF_ZZ_2btag_ZCR == False and Pass_VV2Lep_MergHP_GGF_WZ_ZCR == False and Pass_VV2Lep_MergHP_GGF_ZZ_01btag_ZCR == False and Pass_VV2Lep_MergLP_GGF_ZZ_2btag_ZCR == False and Pass_VV2Lep_MergLP_GGF_ZZ_01btag_ZCR == False and Pass_VV2Lep_MergLP_GGF_WZ_SR == False and Pass_VV2Lep_MergLP_GGF_WZ_ZCR == False'
+    selectionMergedVBF = 'Pass_VV2Lep_MergHP_VBF_WZ_SR == True or Pass_VV2Lep_MergHP_VBF_ZZ_SR == True or Pass_VV2Lep_MergLP_VBF_WZ_SR == True or Pass_VV2Lep_MergLP_VBF_ZZ_SR == True or Pass_VV2Lep_MergHP_VBF_WZ_ZCR == True or Pass_VV2Lep_MergHP_VBF_ZZ_ZCR == True or Pass_VV2Lep_MergLP_VBF_WZ_ZCR == True or Pass_VV2Lep_MergLP_VBF_ZZ_ZCR == True'# or Pass_VV2Lep_MergHP_VBF_WZ_TCR == True or Pass_VV2Lep_MergHP_VBF_ZZ_TCR == True or Pass_VV2Lep_MergLP_VBF_WZ_TCR == True or Pass_VV2Lep_MergLP_VBF_ZZ_TCR == True'
+    #selectionMergedVBF = 'Pass_VV2Lep_MergHP_VBF_ZZ_SR == True or Pass_VV2Lep_MergLP_VBF_ZZ_SR == True or Pass_VV2Lep_MergHP_VBF_ZZ_ZCR == True or Pass_VV2Lep_MergLP_VBF_ZZ_ZCR == True'# or Pass_VV2Lep_MergHP_VBF_WZ_TCR == True or Pass_VV2Lep_MergHP_VBF_ZZ_TCR == True or Pass_VV2Lep_MergLP_VBF_WZ_TCR == True or Pass_VV2Lep_MergLP_VBF_ZZ_TCR == True'
+    selectionResolvedGGF = 'Pass_VV2Lep_Res_GGF_WZ_SR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_Res_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_Res_GGF_WZ_ZCR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_Res_GGF_ZZ_01btag_ZCR == True'# or Pass_VV2Lep_Res_GGF_WZ_TCR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_TCR == True or Pass_VV2Lep_Res_GGF_ZZ_01btag_TCR == True'
+    selectionResolvedVBF = 'Pass_VV2Lep_Res_VBF_WZ_SR == True or Pass_VV2Lep_Res_VBF_ZZ_SR == True or Pass_VV2Lep_Res_VBF_WZ_ZCR == True or Pass_VV2Lep_Res_VBF_ZZ_ZCR == True'# or Pass_VV2Lep_Res_VBF_WZ_TCR == True or Pass_VV2Lep_Res_VBF_ZZ_TCR == True'
+    selectionResolved = 'Pass_VV2Lep_Res_GGF_WZ_SR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_Res_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_Res_GGF_WZ_ZCR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_Res_GGF_ZZ_01btag_ZCR == True or Pass_VV2Lep_Res_VBF_WZ_SR == True or Pass_VV2Lep_Res_VBF_ZZ_SR == True or Pass_VV2Lep_Res_VBF_WZ_ZCR == True or Pass_VV2Lep_Res_VBF_ZZ_ZCR == True'
 
     if channel == 'ggF':
-        dataFrame = dataFrame.query('Pass_isVBF == False')
+        dataFrame = dataFrame.query('Pass_isVBFVV == False')
         if analysis == 'merged':
             selection = selectionMergedGGF
             #selection = selectionMergedGGFZZLPuntagSR            
@@ -294,7 +295,7 @@ def SelectEvents(dataFrame, channel, analysis, preselectionCuts, signal):
             #selection = selectionResolved
 
     elif channel == 'VBF':
-        dataFrame = dataFrame.query('Pass_isVBF == True')
+        dataFrame = dataFrame.query('Pass_isVBFVV == True')
         if analysis == 'merged':
             selection = selectionMergedVBF
         elif analysis == 'resolved':
@@ -307,10 +308,10 @@ def SelectEvents(dataFrame, channel, analysis, preselectionCuts, signal):
         if preselectionCuts == 'looseEventsSelection':
             if 'HVT' in signal:
                 print('Loose events selection for HVT')
-                dataFrame = dataFrame.query('Pass_SFLeptons == True and Pass_Trigger == True and Pass_FatJet == True and fatjet_pt > 200 and lep1_pt > 30 and lep2_pt > 30 and Pass_WTaggerSubStructCutLP == True')
+                dataFrame = dataFrame.query('Pass_VV2Lep_SFLeptons == True and Pass_VV2Lep_Trigger == True and Pass_VV2Lep_FatJet == True and fatjet_pt > 200 and lep1_pt > 30 and lep2_pt > 30 and Pass_VV2Lep_WTaggerSubStructCutLP == True')
             else:
                 print('Loose events selection for Radion and RSG')
-                dataFrame = dataFrame.query('Pass_SFLeptons == True and Pass_Trigger == True and Pass_FatJet == True and fatjet_pt > 200 and lep1_pt > 30 and lep2_pt > 30 and Pass_ZTaggerSubStructCutLP == True')
+                dataFrame = dataFrame.query('Pass_VV2Lep_SFLeptons == True and Pass_VV2Lep_Trigger == True and Pass_VV2Lep_FatJet == True and fatjet_pt > 200 and lep1_pt > 30 and lep2_pt > 30 and Pass_VV2Lep_ZTaggerSubStructCutLP == True')
 
     return dataFrame
 
@@ -318,24 +319,24 @@ def SelectRegime(dataFrame, preselectionCuts, regime, channel, signal):
     ### Selecting events according to the regime
     if regime == 'allMergedGGF':
         if 'HVT' not in signal:
-            dataFrame = dataFrame.query('Pass_MergHP_GGF_ZZ_2btag_SR == True or Pass_MergLP_GGF_ZZ_2btag_SR == True or Pass_MergHP_GGF_ZZ_01btag_SR == True or Pass_MergLP_GGF_ZZ_01btag_SR == True')
+            dataFrame = dataFrame.query('Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR == True')
         else:
-            dataFrame = dataFrame.query('Pass_MergHP_GGF_WZ_SR == True or Pass_MergLP_GGF_WZ_SR == True')
+            dataFrame = dataFrame.query('Pass_VV2Lep_MergHP_GGF_WZ_SR == True or Pass_VV2Lep_MergLP_GGF_WZ_SR == True')
     if regime == 'allMergedVBF':
         if 'HVT' not in signal:
-            dataFrame = dataFrame.query('Pass_MergHP_VBF_ZZ_SR == True or Pass_MergLP_VBF_ZZ_SR == True')
+            dataFrame = dataFrame.query('Pass_VV2Lep_MergHP_VBF_ZZ_SR == True or Pass_VV2Lep_MergLP_VBF_ZZ_SR == True')
         else:
-            dataFrame = dataFrame.query('Pass_MergLP_VBF_WZ_SR == True or Pass_MergHP_VBF_WZ_SR == True')
+            dataFrame = dataFrame.query('Pass_VV2Lep_MergLP_VBF_WZ_SR == True or Pass_VV2Lep_MergHP_VBF_WZ_SR == True')
 
     elif regime == 'allResolvedGGF':
         if 'HVTWZ' not in signal:
-            dataFrame = dataFrame.query('Pass_Res_GGF_ZZ_01btag_SR == True or Pass_Res_GGF_ZZ_2btag_SR == True')
+            dataFrame = dataFrame.query('Pass_VV2Lep_Res_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_Res_GGF_ZZ_2btag_SR == True')
         else:
-            print(Fore.RED + 'ERROR')
+            print('ERROR')
     '''
     if regime == 'allMergedZCRs':
-        dataFrame = dataFrame.query('Pass_isVBF == ' + isVBF)
-        selectionMergedGGF = 'Pass_MergHP_GGF_ZZ_2btag_SR == True or Pass_MergHP_GGF_ZZ_01btag_SR == True or Pass_MergHP_GGF_WZ_SR == True or Pass_MergLP_GGF_ZZ_2btag_SR == True or Pass_MergLP_GGF_ZZ_01btag_SR == True or Pass_MergLP_GGF_WZ_SR == True or Pass_MergHP_GGF_ZZ_2btag_ZCR == True or Pass_MergHP_GGF_ZZ_01btag_ZCR == True or Pass_MergHP_GGF_WZ_ZCR == True or Pass_MergLP_GGF_ZZ_2btag_ZCR == True or Pass_MergLP_GGF_ZZ_01btag_ZCR == True or Pass_MergLP_GGF_WZ_ZCR == True'# or Pass_MergHP_GGF_ZZ_01btag_TCR == True or Pass_MergHP_GGF_ZZ_2btag_TCR == True or Pass_MergHP_GGF_WZ_TCR == True or Pass_MergLP_GGF_ZZ_01btag_TCR == True or Pass_MergLP_GGF_ZZ_2btag_TCR == True or Pass_MergLP_GGF_WZ_TCR == True'
+        dataFrame = dataFrame.query('Pass_isVBFVV == ' + isVBF)
+        selectionMergedGGF = 'Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_MergHP_GGF_WZ_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR == True or Pass_VV2Lep_MergLP_GGF_WZ_SR == True or Pass_VV2Lep_MergHP_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_ZCR == True or Pass_VV2Lep_MergHP_GGF_WZ_ZCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_ZCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_ZCR == True or Pass_VV2Lep_MergLP_GGF_WZ_ZCR == True'# or Pass_VV2Lep_MergHP_GGF_ZZ_01btag_TCR == True or Pass_VV2Lep_MergHP_GGF_ZZ_2btag_TCR == True or Pass_VV2Lep_MergHP_GGF_WZ_TCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_01btag_TCR == True or Pass_VV2Lep_MergLP_GGF_ZZ_2btag_TCR == True or Pass_VV2Lep_MergLP_GGF_WZ_TCR == True'
         dataFrame = dataFrame.query(selectionMergedGGF)
     '''
 
@@ -413,7 +414,7 @@ def DrawVariablesHisto(dataFrame, outputDir, outputFileCommonName, analysis, cha
             statType = 'count'
             hueType = dataFrame['origin']
             legendBool = False
-        #binsDict = {'lep1_m': np.linspace(0, 0.12, 4), 'lep1_pt': np.linspace(0, 2000, 51), 'lep1_eta': np.linspace(-3, 3, 21), 'lep1_phi': np.linspace(-3.5, 3.5, 21), 'lep2_m': np.linspace(0, 0.12, 4), 'lep2_pt': np.linspace(0, 2000, 51), 'lep2_eta': np.linspace(-3, 3, 21), 'lep2_phi': np.linspace(-3.5, 3.5, 21), 'fatjet_m': np.linspace(0, 500, 51), 'fatjet_pt': np.linspace(0, 3000, 51), 'fatjet_eta': np.linspace(-3, 3, 21), 'fatjet_phi': np.linspace(-3.5, 3.5, 21), 'fatjet_D2': np.linspace(0, 15, 51), 'Zcand_m': np.linspace(60, 140, 21), 'Zcand_pt': np.linspace(0, 7000, 31), 'mass': 'auto', 'origin': 'auto', 'Zdijet_m': np.linspace(60, 140, 21), 'Zdijet_pt': 'auto', 'Zdijet_eta': np.linspace(-4, 4, 11), 'Zdijet_phi': np.linspace(-3.5, 3.5, 11), 'sigZJ1_m': np.linspace(0, 120, 21), 'sigZJ1_pt': np.linspace(0, 1000, 11), 'sigZJ1_eta': np.linspace(-3, 3, 21), 'sigZJ1_phi': np.linspace(-3.5, 3.5, 21), 'sigZJ2_m': np.linspace(0, 40, 16), 'sigZJ2_pt': np.linspace(0, 300, 11), 'sigZJ2_eta': np.linspace(-3, 3, 21), 'sigZJ2_phi': np.linspace(-3.5, 3.5, 21), 'DNNScore_W': np.linspace(0, 1, 21), 'DNNScore_Z': np.linspace(0, 1, 21), 'DNNScore_h': np.linspace(0, 1, 21), 'DNNScore_t': np.linspace(0, 1, 21), 'DNNScore_qg': np.linspace(0, 1, 21)} ## for Radion merged ggF
+        #binsDict = {'lep1_m': np.linspace(0, 0.12, 4), 'lep1_pt': np.linspace(0, 2000, 51), 'lep1_eta': np.linspace(-3, 3, 21), 'lep1_phi': np.linspace(-3.5, 3.5, 21), 'lep2_m': np.linspace(0, 0.12, 4), 'lep2_pt': np.linspace(0, 2000, 51), 'lep2_eta': np.linspace(-3, 3, 21), 'lep2_phi': np.linspace(-3.5, 3.5, 21), 'fatjet_m': np.linspace(0, 500, 51), 'fatjet_pt': np.linspace(0, 3000, 51), 'fatjet_eta': np.linspace(-3, 3, 21), 'fatjet_phi': np.linspace(-3.5, 3.5, 21), 'fatjet_D2': np.linspace(0, 15, 51), 'Zcand_m': np.linspace(60, 140, 21), 'Zcand_pt': np.linspace(0, 7000, 31), 'mass': 'auto', 'origin': 'auto', 'Zdijet_m': np.linspace(60, 140, 21), 'Zdijet_pt': 'auto', 'Zdijet_eta': np.linspace(-4, 4, 11), 'Zdijet_phi': np.linspace(-3.5, 3.5, 11), 'sigVJ1_m': np.linspace(0, 120, 21), 'sigVJ1_pt': np.linspace(0, 1000, 11), 'sigVJ1_eta': np.linspace(-3, 3, 21), 'sigVJ1_phi': np.linspace(-3.5, 3.5, 21), 'sigVJ2_m': np.linspace(0, 40, 16), 'sigVJ2_pt': np.linspace(0, 300, 11), 'sigVJ2_eta': np.linspace(-3, 3, 21), 'sigVJ2_phi': np.linspace(-3.5, 3.5, 21), 'DNNScore_W': np.linspace(0, 1, 21), 'DNNScore_Z': np.linspace(0, 1, 21), 'DNNScore_h': np.linspace(0, 1, 21), 'DNNScore_t': np.linspace(0, 1, 21), 'DNNScore_qg': np.linspace(0, 1, 21)} ## for Radion merged ggF
         binsDict = {}
         minBin = min(min(dataFrameBkg[feature]), min(dataFrameSignal[feature]))
         maxBin = max(max(dataFrameBkg[feature]), max(dataFrameSignal[feature]))
@@ -443,7 +444,7 @@ def DrawVariablesHisto(dataFrame, outputDir, outputFileCommonName, analysis, cha
                 ax = seaborn.histplot(data = dataFrame['weight'], x = dataFrame['weight'], hue = dataFrame['isSignal'], common_norm = False, stat = 'count', legend = True)
         '''
         #    contents, bins, _ = plt.hist(dataFrame[feature], weights = dataFrame['train_weight'], bins = 100, label = legendText)
-        labelDict = {'lep1_e': r'lep$_1$ e [GeV]', 'lep1_m': r'lep$_1$ m [GeV]', 'lep1_pt': r'lep$_1$ p$_T$ [GeV]', 'lep1_eta': r'lep$_1$ $\eta$', 'lep1_phi': r'lep$_1$ $\phi$', 'lep2_e': r'lep$_2$ e [GeV]', 'lep2_m': r'lep$_2$ m [GeV]', 'lep2_pt': r'lep$_2$ p$_t$ [GeV]', 'lep2_eta': r'lep$_2$ $\eta$', 'lep2_phi': r'lep$_2$ $\phi$', 'fatjet_m': 'fat jet m [GeV]', 'fatjet_pt': r'fat jet p$_t$ [GeV]', 'fatjet_eta': r'fat jet $\eta$', 'fatjet_phi': r'fat jet $\phi$', 'fatjet_D2': r'fat jet D$_2$', 'Zcand_m': 'Z$_{cand}$ m [GeV]', 'Zcand_pt': r'Z$_{cand}$ p$_t$ [GeV]', 'X_boosted_m': 'X_boosted m [GeV]', 'X_resolved_ZZ_m': 'X_resolved_ZZ m [GeV]', 'X_resolved_WZ_m': 'X_resolved_WZ m [GeV]', 'mass': 'mass [GeV]', 'weight': 'weight', 'isSignal': 'isSignal', 'origin': 'origin', 'Wdijet_m': 'Wdijet m [GeV]', 'Wdijet_pt': 'Wdijet p$_T$ [GeV]', 'Wdijet_eta': 'Wdijet $\eta$', 'Wdijet_phi': 'Wdijet $\phi$', 'Zdijet_m': 'Z$_{dijet}$ m [GeV]', 'Zdijet_pt': 'Z$_{dijet}$ p$_T$ [GeV]', 'Zdijet_eta': 'Z$_{dijet}$ $\eta$', 'Zdijet_phi': 'Z$_{dijet}$ $\phi$', 'sigWJ1_m': 'sigWJ1 m', 'sigWJ1_pt': 'sigWJ1 p$_T$', 'sigWJ1_eta': 'sigWJ1 $\eta$', 'sigWJ1_phi': 'sigWJ1 $\phi$', 'sigWJ2_m': 'sigWJ2 m', 'sigWJ2_pt': 'sigWJ2 p$_T$', 'sigWJ2_eta': 'sigWJ2 $\eta$', 'sigWJ2_phi': 'sigWJ2 $\phi$', 'sigZJ1_m': 'sigZJ1 m', 'sigZJ1_pt': 'sigZJ1 p$_T$', 'sigZJ1_eta': 'sigZJ1 $\eta$', 'sigZJ1_phi': 'sigZJ1 $\phi$', 'sigZJ2_m': 'sigZJ2 m', 'sigZJ2_pt': 'sigZJ2 p$_T$', 'sigZJ2_eta': 'sigZJ2 $\eta$', 'sigZJ2_phi': 'sigZJ2 $\phi$', 'lep1_px': r'lep$_1$ p$_x$ [GeV]', 'lep1_py': r'lep$_1$ p$_y$ [GeV]', 'lep1_pz': r'lep$_1$ p$_z$ [GeV]', 'lep2_px': r'lep$_2$ p$_x$ [GeV]', 'lep2_py': r'lep$_2$ p$_y$ [GeV]', 'lep2_pz': r'lep$_2$ p$_z$ [GeV]', 'fatjet_e': 'fat jet e [GeV]', 'fatjet_px': r'fat jet p$_x$ [GeV]', 'fatjet_py': r'fat jet p$_y$', 'fatjet_pz': r'fat jet p$_z$'}
+        labelDict = {'lep1_e': r'lep$_1$ e [GeV]', 'lep1_m': r'lep$_1$ m [GeV]', 'lep1_pt': r'lep$_1$ p$_T$ [GeV]', 'lep1_eta': r'lep$_1$ $\eta$', 'lep1_phi': r'lep$_1$ $\phi$', 'lep2_e': r'lep$_2$ e [GeV]', 'lep2_m': r'lep$_2$ m [GeV]', 'lep2_pt': r'lep$_2$ p$_t$ [GeV]', 'lep2_eta': r'lep$_2$ $\eta$', 'lep2_phi': r'lep$_2$ $\phi$', 'fatjet_m': 'fat jet m [GeV]', 'fatjet_pt': r'fat jet p$_t$ [GeV]', 'fatjet_eta': r'fat jet $\eta$', 'fatjet_phi': r'fat jet $\phi$', 'fatjet_D2': r'fat jet D$_2$', 'Zcand_m': 'Z$_{cand}$ m [GeV]', 'Zcand_pt': r'Z$_{cand}$ p$_t$ [GeV]', 'X_VV_merged_m': 'X_boosted m [GeV]', 'X_ZZ_resolved_m': 'X_resolved_ZZ m [GeV]', 'X_WZ_resolved_m': 'X_resolved_WZ m [GeV]', 'mass': 'mass [GeV]', 'weight': 'weight', 'isSignal': 'isSignal', 'origin': 'origin', 'Wdijet_m': 'Wdijet m [GeV]', 'Wdijet_pt': 'Wdijet p$_T$ [GeV]', 'Wdijet_eta': 'Wdijet $\eta$', 'Wdijet_phi': 'Wdijet $\phi$', 'Zdijet_m': 'Z$_{dijet}$ m [GeV]', 'Zdijet_pt': 'Z$_{dijet}$ p$_T$ [GeV]', 'Zdijet_eta': 'Z$_{dijet}$ $\eta$', 'Zdijet_phi': 'Z$_{dijet}$ $\phi$', 'sigVJ1_m': 'sigVJ1 m', 'sigVJ1_pt': 'sigVJ1 p$_T$', 'sigVJ1_eta': 'sigVJ1 $\eta$', 'sigVJ1_phi': 'sigVJ1 $\phi$', 'sigVJ2_m': 'sigVJ2 m', 'sigVJ2_pt': 'sigVJ2 p$_T$', 'sigVJ2_eta': 'sigVJ2 $\eta$', 'sigVJ2_phi': 'sigVJ2 $\phi$', 'sigVJ1_m': 'sigVJ1 m', 'sigVJ1_pt': 'sigVJ1 p$_T$', 'sigVJ1_eta': 'sigVJ1 $\eta$', 'sigVJ1_phi': 'sigVJ1 $\phi$', 'sigVJ2_m': 'sigVJ2 m', 'sigVJ2_pt': 'sigVJ2 p$_T$', 'sigVJ2_eta': 'sigVJ2 $\eta$', 'sigVJ2_phi': 'sigVJ2 $\phi$', 'lep1_px': r'lep$_1$ p$_x$ [GeV]', 'lep1_py': r'lep$_1$ p$_y$ [GeV]', 'lep1_pz': r'lep$_1$ p$_z$ [GeV]', 'lep2_px': r'lep$_2$ p$_x$ [GeV]', 'lep2_py': r'lep$_2$ p$_y$ [GeV]', 'lep2_pz': r'lep$_2$ p$_z$ [GeV]', 'fatjet_e': 'fat jet e [GeV]', 'fatjet_px': r'fat jet p$_x$ [GeV]', 'fatjet_py': r'fat jet p$_y$', 'fatjet_pz': r'fat jet p$_z$'}
         '''
         if feature in featureLogX:
             ax.set_xscale('log')
@@ -480,7 +481,7 @@ def DrawVariablesHisto(dataFrame, outputDir, outputFileCommonName, analysis, cha
         pltName = '/Histo_' + feature + '_' + outputFileCommonName + '.png'
         plt.tight_layout()
         plt.savefig(outputDir + pltName)
-        print(Fore.GREEN + 'Saved ' + outputDir + pltName)
+        print('Saved ' + outputDir + pltName)
         plt.clf()
     dataFrame['isSignal'].replace(to_replace = ['Background', 'Signal'], value = [0, 1], inplace = True)
     if 'VBF' in signal:
@@ -538,7 +539,7 @@ def ComputeTrainWeights(dataSetSignal, dataSetBackground, massesSignalList, outp
         plt.tight_layout()
         pltName = outputDir + '/WeightedEvents_' + fileCommonName + '.png'
         plt.savefig(pltName)
-        print(Fore.GREEN + 'Saved ' + pltName)
+        print('Saved ' + pltName)
         logString = '\nSaved ' + pltName
         plt.clf()
         plt.close()
@@ -598,7 +599,7 @@ def ScalingFeatures(dataTrain, dataTest, InputFeatures, outputDir):
     variablesFile.write("  ],\n")
     variablesFile.write("  \"class_labels\": [\"BinaryClassificationOutputName\"]\n")
     variablesFile.write("}\n")
-    print(Fore.GREEN + 'Saved variables offsets and scales in ' + variablesFileName)
+    print('Saved variables offsets and scales in ' + variablesFileName)
     logString = '\nSaved variables offset and scales in ' + variablesFileName
     return dataTrain, dataTest, logString
 
@@ -662,7 +663,7 @@ def ComputeScaleFactors(dataTrain, outputDir):
     variablesFile.write("  ],\n")
     variablesFile.write("  \"class_labels\": [\"BinaryClassificationOutputName\"]\n")
     variablesFile.write("}\n")
-    print(Fore.GREEN + 'Saved variables offsets (median) and scales (interquartile range, IQR) in ' + variablesFileName)
+    print('Saved variables offsets (median) and scales (interquartile range, IQR) in ' + variablesFileName)
     logString = '\nSaved variables offset (median) and scales (interquartile range, IQR) in ' + variablesFileName
     return logString
 
@@ -673,7 +674,7 @@ from keras.callbacks import EarlyStopping
 from keras.layers.core import Dense, Activation
 from sklearn.metrics import log_loss
 import tensorflow as tf
-from keras.optimizers import SGD
+#from keras.optimizers import SGD
 
 def BuildNN(N_input, nodesNumber, layersNumber, dropout, studyLearningRate):
     activationFunction = 'swish'#'relu'#'swish'
@@ -716,10 +717,10 @@ def SaveArchAndWeights(model, outputDir):
     outputArch = outputDir + '/architecture.json'
     with open(outputArch, 'w') as arch_file:
         arch_file.write(arch)
-    print(Fore.GREEN + 'Saved NN architecture in ' + outputArch)
+    print('Saved NN architecture in ' + outputArch)
     outputWeights = outputDir + '/weights.h5'
     model.save_weights(outputWeights)
-    print(Fore.GREEN + 'Saved NN weights in ' + outputWeights)
+    print('Saved NN weights in ' + outputWeights)
 
 def SaveVariables(outputDir, X_input):
     outputVar = outputDir + '/variables.json'
@@ -747,7 +748,7 @@ def SaveVariables(outputDir, X_input):
         var_file.write("  ],\n")
         var_file.write("  \"class_labels\": [\"BinaryClassificationOutputName\"]\n")
         var_file.write("}\n")
-    print(Fore.GREEN + 'Saved variables in ' + outputVar)
+    print('Saved variables in ' + outputVar)
 
 def SaveFeatureScaling(outputDir, X_input):
     outputFeatureScaling = outputDir + '/FeatureScaling.dat'
@@ -775,7 +776,7 @@ def SaveFeatureScaling(outputDir, X_input):
         scaling_file.write("[")
         scaling_file.write(' '.join(str(1./float(i)) for i in X_input.std(axis=0)))
         scaling_file.write("]\n")
-    print(Fore.GREEN + 'Saved features scaling in ' + outputFeatureScaling)
+    print('Saved features scaling in ' + outputFeatureScaling)
 
 def SaveModel(model, outputDir, NN):
     SaveArchAndWeights(model, outputDir)
@@ -843,7 +844,7 @@ def DrawCorrelationMatrix(dataFrame, InputFeatures, outputDir, outputFileCommonN
     plt.subplots_adjust(left = 0.1, right = 0.75)
     CorrelationMatrixName = outputDir + '/CorrelationMatrix_' + outputFileCommonName + '.png'
     plt.savefig(CorrelationMatrixName)
-    print(Fore.GREEN + 'Saved ' + CorrelationMatrixName)
+    print('Saved ' + CorrelationMatrixName)
     plt.clf()
     plt.close()
 
@@ -882,7 +883,7 @@ def DrawAccuracy(modelMetricsHistory, testAccuracy, patienceValue, outputDir, NN
     AccuracyPltName = outputDir + '/Accuracy_' + outputFileCommonName + '.png'
     plt.tight_layout()
     plt.savefig(AccuracyPltName)
-    print(Fore.GREEN + 'Saved ' + AccuracyPltName)
+    print('Saved ' + AccuracyPltName)
     plt.clf()
     plt.close()
 
@@ -920,7 +921,7 @@ def DrawLoss(modelMetricsHistory, testLoss, patienceValue, outputDir, NN, analys
     LossPltName = outputDir + '/Loss_' + outputFileCommonName + '.png'
     plt.tight_layout()
     plt.savefig(LossPltName)
-    print(Fore.GREEN + 'Saved ' + LossPltName)
+    print('Saved ' + LossPltName)
     plt.clf()
     plt.close()
 
@@ -975,7 +976,7 @@ def DrawROCbkgRejectionScores(fpr, tpr, AUC, outputDir, NN, unscaledMass, analys
         plt.gca().add_artist(legend1)
         ROCPltName = outputDir + '/ROC_' + outputFileCommonName + '_' + str(unscaledMass) + '.png'
         plt.savefig(ROCPltName)#, bbox_inches = 'tight')
-        print(Fore.GREEN + 'Saved ' + ROCPltName)
+        print('Saved ' + ROCPltName)
         plt.clf()
         plt.close()
     
@@ -992,7 +993,7 @@ def DrawROCbkgRejectionScores(fpr, tpr, AUC, outputDir, NN, unscaledMass, analys
         plt.legend(loc = 'upper center')
         ScoresPltName = outputDir + '/Scores_' + outputFileCommonName + '_' + str(unscaledMass) + '.png'
         plt.savefig(ScoresPltName)
-        print(Fore.GREEN + 'Saved ' + ScoresPltName)
+        print('Saved ' + ScoresPltName)
         plt.clf()
         plt.close()
 
@@ -1006,14 +1007,14 @@ def DrawROCbkgRejectionScores(fpr, tpr, AUC, outputDir, NN, unscaledMass, analys
   
     WP = [0.90, 0.94, 0.97, 0.99]
     bkgRejections = np.array([])
-    #print(Fore.BLUE + 'Mass: ' + str(unscaledMass), ', background rejection at WP = 0.90: ' + str(bkgRej90))
+    #print('Mass: ' + str(unscaledMass), ', background rejection at WP = 0.90: ' + str(bkgRej90))
 
     for i in range(0, len(WP)):
         bkgRejections = np.append(bkgRejections, np.interp(WP[i], tprCut, fprCutInverse))
         if drawPlots:
             plt.axvline(x = WP[i], color = 'Red', linestyle = 'dashed', label = 'Bkg Rejection @ ' + str(WP[i]) + ' WP: ' + str(round(bkgRejections[i], 1)))
 
-    print(format(Fore.BLUE + 'Working points: ' + str(WP) + '\nBackground rejection at each working point: ' + str(bkgRejections)))
+    print(format('Working points: ' + str(WP) + '\nBackground rejection at each working point: ' + str(bkgRejections)))
     if drawPlots:
         plt.xlabel('Signal efficiency')
         plt.ylabel('Background rejection')
@@ -1026,7 +1027,7 @@ def DrawROCbkgRejectionScores(fpr, tpr, AUC, outputDir, NN, unscaledMass, analys
         plt.gca().add_artist(legend1)
         EffPltName = outputDir + '/BkgRejection_' + outputFileCommonName + '_' + str(unscaledMass) + '.png'
         plt.savefig(EffPltName)#, bbox_inches = 'tight')
-        print(Fore.GREEN + 'Saved ' + EffPltName)
+        print('Saved ' + EffPltName)
         plt.clf()
         plt.close()
     return WP, bkgRejections
@@ -1066,7 +1067,7 @@ def DrawEfficiency(yhat_train_signal, yhat_test_signal, yhat_train_bkg, yhat_tes
         #ScoresPltName = outputDir + '/Scores_' + bkg + '.png'
         ScoresPltName = outputDir + '/Scores_' + outputFileCommonName + '_' + str(mass) + '.png'
         plt.savefig(ScoresPltName)
-        print(Fore.GREEN + 'Saved ' + ScoresPltName)
+        print('Saved ' + ScoresPltName)
         plt.clf()
     plt.close()
     ### ROC
@@ -1104,7 +1105,7 @@ def DrawEfficiency(yhat_train_signal, yhat_test_signal, yhat_train_bkg, yhat_tes
         #ROCPltName = outputDir + '/ROC_' + bkg + '.png'
         ROCPltName = outputDir + '/ROC_' + outputFileCommonName + '_' + str(mass) + '.png'
         plt.savefig(ROCPltName)
-        print(Fore.GREEN + 'Saved ' + ROCPltName)
+        print('Saved ' + ROCPltName)
         plt.clf()
     plt.close()
     ### Background rejection vs efficiency
@@ -1112,9 +1113,9 @@ def DrawEfficiency(yhat_train_signal, yhat_test_signal, yhat_train_bkg, yhat_tes
     rej=1./bkg_eff
     WP_idx=[np.where(np.abs(signal_eff-WP[i])==np.min(np.abs(signal_eff-WP[i])))[0][0] for i in range(0,len(WP))]
     WP_rej=[str(round(10*rej[WP_idx[i]])/10) for i in range(0,len(WP))]
-    print(Fore.BLUE + 'Working points (WP): ' + str(WP))
-    #print(Fore.BLUE + 'Working points (WP): ' + str(bins_0[Nbins-np.array(WP_idx)]))
-    print(Fore.BLUE + 'Background rejection at each WP: ' + str(WP_rej))
+    print('Working points (WP): ' + str(WP))
+    #print('Working points (WP): ' + str(bins_0[Nbins-np.array(WP_idx)]))
+    print('Background rejection at each WP: ' + str(WP_rej))
 
     if savePlot:
         plt.plot(signal_eff,rej)
@@ -1133,7 +1134,7 @@ def DrawEfficiency(yhat_train_signal, yhat_test_signal, yhat_train_bkg, yhat_tes
         #EffPltName = outputDir + '/BkgRejection_' + bkg +'.png'
         EffPltName = outputDir + '/BkgRejection_' + outputFileCommonName + '_' + str(mass) + '.png'
         plt.savefig(EffPltName)
-        print(Fore.GREEN + 'Saved ' + EffPltName)
+        print('Saved ' + EffPltName)
         plt.clf()
         plt.close()
     return Area, WP, WP_rej 
@@ -1164,7 +1165,7 @@ def DrawRejectionVsMass(massVec, WP, bkgRej90, bkgRej94, bkgRej97, bkgRej99, out
     plt.subplots_adjust(left = 0.15, right = 0.75)
     pltName = outputDir + '/BkgRejectionVsMass_' + outputFileCommonName + '.png'
     plt.savefig(pltName)#, bbox_inches = 'tight')
-    print(Fore.GREEN + 'Saved ' + pltName)
+    print('Saved ' + pltName)
     plt.subplots_adjust(left = 0.15, right = 0.95)
     plt.close()
 
@@ -1196,7 +1197,7 @@ def DrawRejectionVsStat(massVec, fracTrain, WP, bkgRej90Dict, bkgRej94Dict, bkgR
     plt.subplots_adjust(left = 0.15, right = 0.75)
     pltName = outputDir + '/BkgRejectionVsStat_' + outputFileCommonName + '.png'
     plt.savefig(pltName)#, bbox_inches = 'tight')
-    print(Fore.GREEN + 'Saved ' + pltName)
+    print('Saved ' + pltName)
     plt.subplots_adjust(left = 0.15, right = 0.95)
     plt.close()
 
@@ -1209,7 +1210,7 @@ def DrawCM(yhat_test, y_test, w_test, outputDir, mass, background, outputFileCom
     yResult_test_cls = np.array([ int(round(x[0])) for x in yhat_test])
     cm = confusion_matrix(y_test, yResult_test_cls, sample_weight = w_test, normalize = 'true')
     TNR, FPR, FNR, TPR = cm.ravel()
-    print(format(Fore.BLUE + 'TNR: '  + str(TNR) + ', FPR: ' + str(FPR) + ', FNR: ' + str(FNR) + ', TPR: ' + str(TPR)))
+    print(format('TNR: '  + str(TNR) + ', FPR: ' + str(FPR) + ', FNR: ' + str(FNR) + ', TPR: ' + str(TPR)))
     if drawPlots:
         classes = ['Background', 'Signal']
         np.set_printoptions(precision = 2)
@@ -1239,7 +1240,7 @@ def DrawCM(yhat_test, y_test, w_test, outputDir, mass, background, outputFileCom
         plt.figtext(0.77, 0.45, legendText, wrap = True, horizontalalignment = 'left')
         plt.subplots_adjust(left = 0.1, right = 0.75)
         plt.savefig(CMPltName)#, bbox_inches = 'tight')
-        print(Fore.GREEN + 'Saved ' + CMPltName)
+        print('Saved ' + CMPltName)
         plt.subplots_adjust(left = 0.15, right = 0.95)
         plt.clf()
         plt.close()
@@ -1286,7 +1287,7 @@ def weightEvents(origin_train, signal):
             else:
                 DictWeights[origin] = minNumber / DictNumbers[origin]
     else:
-        print(Fore.RED + 'No weights defined for this statistic')
+        print('No weights defined for this statistic')
     w_origin_train = origin_train.copy()
     for origin in originsList:
         w_origin_train = np.where(w_origin_train == origin, DictWeights[origin], w_origin_train)
@@ -1316,45 +1317,45 @@ def defineBins(regime):
     bins = []
     if (all(x in regime for x in ['SR', 'Res', 'GGF', 'Tag'])):
         bins = [300, 320, 350, 380, 410, 440, 480, 520, 560, 600, 650, 700, 750, 810, 870, 940, 1010, 1090, 1170, 1260, 1360, 1460, 1650, 3000]
-        #print(Fore.RED + 'found1')
+        #print('found1')
     if (all(x in regime for x in ['SR', 'Res', 'GGF', 'Untag'])):
         bins = [300, 320, 350, 380, 410, 440, 480, 520, 560, 600, 650, 700, 750, 810, 870, 940, 1010, 1090, 1170, 1260, 1360, 1460, 1570, 1690, 1820, 1960, 2110, 3000]
-        #print(Fore.RED + 'found2')
+        #print('found2')
     if (all(x in regime for x in ['SR', 'Res', 'GGF', 'WZ'])):
         bins = [300, 320, 350, 380, 410, 440, 470, 500, 530, 560, 600, 640, 680, 720, 770, 820, 870, 930, 990, 1060, 1130, 1210, 1290, 1380, 1470, 1570, 1680, 1790, 2140, 3000]
-        #print(Fore.RED + 'found11')
+        #print('found11')
     if (all(x in regime for x in ['SR', 'Res', 'VBF', 'ZZ'])):
         bins = [300, 320, 350, 380, 410, 440, 470, 500, 540, 580, 620, 660, 710, 760, 810, 870, 930, 990, 1060, 1130, 1210, 1290, 1380, 1470, 1630, 1790, 3000]
-        #print(Fore.RED + 'found3')
+        #print('found3')
     if (all(x in regime for x in ['SR', 'Res', 'VBF', 'WZ'])):
         bins = [300, 320, 350, 380, 410, 440, 470, 500, 540, 580, 620, 660, 710, 760, 810, 860, 920, 980, 1040, 1110, 1180, 1250, 1330, 1410, 1640, 1870, 3000]
-        #print(Fore.RED + 'found14')
+        #print('found14')
     if (all(x in regime for x in ['SR', 'Merg', 'GGF', 'Tag'])):
-        #print(Fore.RED + 'found4')
+        #print('found4')
         bins = [500, 530, 570, 610, 650, 690, 730, 770, 810, 850, 890, 930, 970, 1020, 1070, 1120, 1170, 1220, 1270, 1330, 1480, 1630, 1780, 1930, 2080, 2380, 6000]
     if (all(x in regime for x in ['SR', 'Merg', 'GGF', 'Untag'])):
-        #print(Fore.RED + 'found5')
+        #print('found5')
         bins = [500, 530, 570, 610, 650, 690, 730, 770, 810, 850, 890, 930, 970, 1020, 1070, 1120, 1170, 1220, 1270, 1330, 1390, 1450, 1510, 1570, 1640, 1710, 1780, 1850, 1920, 2000, 2080, 2160, 2250, 2340, 2430, 2520, 2620, 2720, 2820, 3120, 3420, 4910, 6000]
     if (all(x in regime for x in ['SR', 'Merg', 'GGF', 'WZ'])):
-        #print(Fore.RED + 'found12')
+        #print('found12')
         bins = [500, 530, 570, 610, 650, 690, 730, 770, 810, 850, 890, 930, 970, 1010, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1410, 1470, 1530, 1590, 1650, 1720, 1790, 1860, 1930, 2000, 2080, 2160, 2240, 2330, 2510, 2690, 2870, 3320, 3770, 6000]
     if (all(x in regime for x in ['SR', 'Merg', 'VBF', 'ZZ'])):
-        #print(Fore.RED + 'found6')
+        #print('found6')
         bins = [500, 530, 570, 610, 650, 690, 730, 770, 810, 860, 910, 960, 1010, 1070, 1130, 1190, 1260, 1340, 1420, 1530, 1680, 1830, 1980, 6000]
     if (all(x in regime for x in ['SR', 'Merg', 'VBF', 'WZ'])):
-        #print(Fore.RED + 'found13')
+        #print('found13')
         bins = [500, 530, 570, 610, 650, 690, 730, 770, 810, 850, 890, 930, 970, 1010, 1050, 1090, 1130, 1170, 1210, 1250, 1300, 1350, 1410, 1470, 1630, 2000, 2370, 6000]
     if (all(x in regime for x in ['CR', 'Res', 'GGF', 'ZCR'])):
-        #print(Fore.RED + 'found7')
+        #print('found7')
         bins = [300, 320, 350, 380, 410, 440, 470, 500, 530, 570, 610, 660, 740, 900, 3000]
     if (all(x in regime for x in ['CR', 'Res', 'VBF', 'ZCR'])):
-        #print(Fore.RED + 'found8')
+        #print('found8')
         bins = [300,  3000]
     if (all(x in regime for x in ['CR', 'Merg', 'GGF', 'ZCR'])):
-        #print(Fore.RED + 'found9')
+        #print('found9')
         bins = [500, 6000]
     if (all(x in regime for x in ['CR', 'Merg', 'VBF', 'ZCR'])):
-        #print(Fore.RED + 'found10')
+        #print('found10')
         bins = [500, 6000]
 
     return bins
@@ -1463,7 +1464,7 @@ def defineVariableBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolut
             
             if bkg >= resolutionRangeLeft and abs(bkg - leftEdge) >= resolution and bkgError <= bkgUncertainty and bkg <= resolutionRangeRight:# and bkg < upperMass: ## main
                 Bins = np.append(Bins, bkg)
-                print(Fore.RED + 'Found bin edgeeeeeeeeeeeeeeeeeeeeeeeeee: ' + str(bkg))
+                print('Found bin edgeeeeeeeeeeeeeeeeeeeeeeeeee: ' + str(bkg))
                 print('Left edge: ' + str(leftEdge))
                 print('Difference: ' + str(abs(bkg - leftEdge))) ###???
                 print('Error: ' + str(bkgError))
@@ -1528,7 +1529,7 @@ def defineVariableBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolut
                 weightsSumSquared = 0
                 leftEdge = bkg
         Bins = np.append(Bins, resolutionRangeRight)
-        print(Fore.RED + 'Bins: ' + str(Bins))
+        print('Bins: ' + str(Bins))
         return Bins, bkgMassEventsInResolution
 
 
@@ -1544,7 +1545,7 @@ def defineVariableBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolut
                 nBins = 1
         print('nBins:', nBins)
         Bins = np.linspace(resolutionRangeLeft, resolutionRangeRight, nBins + 1)
-        print(Fore.RED + 'Bins: ' + str(Bins))
+        print('Bins: ' + str(Bins))
         return(Bins)
 
     '''
@@ -1582,7 +1583,7 @@ def defineVariableBinsNew(bkgEvents, weightsBkgEvents, resolution, leftEdge, rig
     elif feature == 'Scores':
         bkgScoresEventsInResolution = sum(weightsBkgEvents)
         print('# weighted bkg events in scores distribution: ' + str(bkgScoresEventsInResolution))
-        #print(Fore.RED + 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa i due numeri sopra devono essere uguali!!!')
+        #print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa i due numeri sopra devono essere uguali!!!')
 
     if feature == 'InvariantMass':# or feature == 'Scores':
         reachedLastElement = False
@@ -1599,10 +1600,10 @@ def defineVariableBinsNew(bkgEvents, weightsBkgEvents, resolution, leftEdge, rig
                     relativeBkgError = (math.sqrt(weightsSumSquared)) / weightsSum
                 else: 
                     relativeBkgError = 0
-                #print(Fore.RED + 'Last bkg eventttttttttttttttttttttttttttttt')
+                #print('Last bkg eventttttttttttttttttttttttttttttt')
                 if weightsSum <= 0 or (bkg - leftEdge) < resolutionFraction or relativeBkgError > bkgUncertainty:
                     #print('Bins before deletinggggggg:' + str(Bins))
-                    #print(Fore.RED + 'Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+                    #print('Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
                     Bins = np.delete(Bins, -1)
                     #print(Bins)
 
@@ -1634,7 +1635,7 @@ def defineVariableBinsNew(bkgEvents, weightsBkgEvents, resolution, leftEdge, rig
                 leftEdge = bkg
 
         Bins = np.append(Bins, rightEdge)
-        #print(Fore.RED + 'Bins: ' + str(Bins))
+        #print('Bins: ' + str(Bins))
         return Bins, bkgMassEventsInResolution
 
 
@@ -1695,7 +1696,7 @@ def defineVariableBinsNew(bkgEvents, weightsBkgEvents, resolution, leftEdge, rig
             secondEdge = BinsArray[iBin + 1]
         '''
         
-        print(Fore.RED + 'Bins: ' + str(BinsArray))
+        print('Bins: ' + str(BinsArray))
         return(BinsArray)
 
 
@@ -1730,7 +1731,7 @@ def computeBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolutionRang
     bkgLimit = 0.007 * totalBkgEvents
     if bkgLimit <= 0:
         plotMass = False
-        print(Fore.RED + 'Skipping mass beacuse bkg content in region with 95% of the signal is <= 0: ' + str(totalBkgEvents))
+        print('Skipping mass beacuse bkg content in region with 95% of the signal is <= 0: ' + str(totalBkgEvents))
     else:
         plotMass = True
         bkgUpperLimit = 0.05 * totalBkgEvents
@@ -1753,7 +1754,7 @@ def computeBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolutionRang
                 '''
                 if bkg == bkgEventsResolutionArray[len(bkgEventsResolutionArray) - 1] and weightsSum < bkgLimit: ### when we reach the last bkg event we check that the bin is large enough to meet the requirements we set, otherwise we remove the last binEdge from the bin array
                 print('Bins before deletinggggggg:' + str(Bins))
-                print(Fore.RED + 'Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+                print('Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
                 Bins = np.delete(Bins, -1)
                 #print(Bins)
                 '''
@@ -1773,7 +1774,7 @@ def computeBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolutionRang
                     
             
         Bins = np.sort(Bins)
-        print(Fore.RED + 'Bins: ' + str(Bins))
+        print('Bins: ' + str(Bins))
         bkgEvents, _, _ = plt.hist(bkgEventsResolutionArray, weights = np.array(weightsBkgEventsResolutionArray), bins = Bins)
         print('bkg contents from functions: ' + str(bkgEvents))
         plt.clf()
@@ -1802,13 +1803,13 @@ def computeBins(bkgEvents, weightsBkgEvents, resolutionRangeLeft, resolutionRang
         '''
         while bkgEvents[len(bkgEvents) - 1] < bkgLimit:
             print('Bins before deletinggggggg:' + str(Bins))
-            print(Fore.RED + 'Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+            print('Removing last binnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
             Bins = np.delete(Bins, -2)
             bkgEvents, _, _ = plt.hist(bkgEventsResolutionArray, weights = np.array(weightsBkgEventsResolutionArray), bins = Bins)
             print('bkg contents from functions: ' + str(bkgEvents))
             plt.clf()
         '''
-        print(Fore.RED + 'Bins: ' + str(Bins))            
+        print('Bins: ' + str(Bins))            
 
     return Bins, plotMass
 
@@ -1833,7 +1834,7 @@ def defineVariableBinsOld(bkgEvents, weightsBkgEvents, lowerMass, upperMass, res
         #if (bkg - leftEdge) >= resolution and bkgErrorSquared <= 0.5 ** 2 and bkg <= upperMass: ### TODO check the last end with high mass
         #if (bkg - leftEdge) >= resolution and bkgErrorSquared <= 0.7 ** 2 and bkg <= resolutionRangeRight: ### TODO check the last end with high mass
         if (bkg - leftEdge) >= resolution and bkgErrorSquared <= 0.7 ** 2 and bkg <= upperMass:
-            #print(Fore.RED + 'Found bin')
+            #print('Found bin')
             Bins = np.append(Bins, bkg)
             bkgErrorSquared = 0
             leftEdge = bkg
@@ -1852,10 +1853,10 @@ def computeWeightedMetrics(y_true, y_pred):
     y_true_len = int(len(y_true))
     print('\ny_true_len: ' + str(y_true_len))
     if(y_true_len > int(len(w_train) / 2)): ### Safe assumption (I think) NO!
-        print(Fore.BLUE + '-------------------- Evaluation on the train sample ------------------------')
+        print('-------------------- Evaluation on the train sample ------------------------')
         w_train = w_train[:y_true_len]
     else:
-        print(Fore.BLUE + '\n-------------------- Evaluation on the validation sample -------------------------')
+        print('\n-------------------- Evaluation on the validation sample -------------------------')
         w_train = w_train[(y_true_len + 1):]
     print('Y_true from backend\n', K.get_value(y_true))
     print('Y_pred from backend\n', K.get_value(y_pred))
@@ -1869,11 +1870,11 @@ def computeWeightedMetrics(y_true, y_pred):
         predicted_positives += K.round(y_pred[event]) * w_train[event]
     recall = true_positives / (possible_positives + K.epsilon()) ### can I safely ignore K.epsilon()?
     precision = true_positives / (predicted_positives + K.epsilon())
-    print(Fore.BLUE + 'True positives: '  + str(true_positives))
-    print(Fore.BLUE + 'Possible (MC) positives: '  + str(possible_positives))
-    print(Fore.BLUE + 'Predicted positives: '  + str(predicted_positives))
-    print(Fore.BLUE + 'Recall (TP / possible positives): ' + str(recall))
-    print(Fore.BLUE + 'Precision (TP / predicted positives): ' + str(precision))
+    print('True positives: '  + str(true_positives))
+    print('Possible (MC) positives: '  + str(possible_positives))
+    print('Predicted positives: '  + str(predicted_positives))
+    print('Recall (TP / possible positives): ' + str(recall))
+    print('Precision (TP / predicted positives): ' + str(precision))
     return precision, recall
 
 ### Metric definition
@@ -1998,7 +1999,7 @@ import json
 def scaleVariables(modelDir, dataFrameSignal, dataFrameBkg, inputFeatures, outputDir):
     variablesFileName = 'variables.json'
     variablesFile = modelDir + variablesFileName 
-    print(Fore.GREEN + 'Loading ' + variablesFile)
+    print('Loading ' + variablesFile)
     jsonFile = open(variablesFile, 'r')
     values = json.load(jsonFile)
     for field in values['inputs']:
@@ -2013,14 +2014,14 @@ def scaleVariables(modelDir, dataFrameSignal, dataFrameBkg, inputFeatures, outpu
             dataFrameBkg[feature] = (dataFrameBkg[feature] - offset) / scale
     jsonFile.close()
     shutil.copyfile(variablesFile, outputDir + variablesFileName)
-    print(Fore.GREEN + 'Copied variables file to ' + outputDir + variablesFileName)
+    print('Copied variables file to ' + outputDir + variablesFileName)
     return dataFrameSignal, dataFrameBkg
 
 ### Scaling train dataset according to the scale factor saved in variables.json file
 def scaleTrainTestDataset(dataTrain, variablesDir, inputFeatures, sampleType):
     variablesFileName = 'variables.json'
     variablesFile = variablesDir + variablesFileName 
-    print(Fore.GREEN + 'Loading scaling factors from ' + variablesFile)
+    print('Loading scaling factors from ' + variablesFile)
     jsonFile = open(variablesFile, 'r')
     values = json.load(jsonFile)
     for field in values['inputs']:
@@ -2037,7 +2038,7 @@ def scaleTrainTestDataset(dataTrain, variablesDir, inputFeatures, sampleType):
     '''
     outputFileName = outputDir + '/' + variablesFileName
     shutil.copyfile(variablesFile, outputFileName)
-    print(Fore.GREEN + 'Copied variables file to ' + outputFileName)
+    print('Copied variables file to ' + outputFileName)
     '''
     return dataTrain
 
@@ -2048,21 +2049,21 @@ def loadModelAndWeights(modelDir, outputDir):
     architectureFileName = 'architecture.json'
     architectureFile = modelDir + architectureFileName
     with open(architectureFile, 'r') as json_file:
-        print(Fore.GREEN + 'Loading ' + architectureFile)
+        print('Loading ' + architectureFile)
         model = model_from_json(''.join(json_file.readlines()))
     shutil.copyfile(architectureFile, outputDir + architectureFileName)
-    print(Fore.GREEN + 'Copied architecture file to ' + outputDir + architectureFileName)
+    print('Copied architecture file to ' + outputDir + architectureFileName)
     ### Plotting and saving the model
     plot_model(model, to_file = outputDir + 'loadedModel.png', show_shapes = True, show_layer_names = True)
-    print(Fore.GREEN + 'Saved ' + outputDir + 'loadedModel.png')
+    print('Saved ' + outputDir + 'loadedModel.png')
     ### Loading weights into the model
     weightsFileName = 'weights.h5'
     weightsFile = modelDir + weightsFileName
     #weightsFile = modelDir + preselectionCuts + '/weights.h5'
-    print(Fore.GREEN + 'Loading ' + weightsFile)
+    print('Loading ' + weightsFile)
     model.load_weights(weightsFile)
     shutil.copyfile(weightsFile, outputDir + weightsFileName)
-    print(Fore.GREEN + 'Copied weights file to ' + outputDir + weightsFileName)
+    print('Copied weights file to ' + outputDir + weightsFileName)
     batchSize = 2048
     #print(model.summary())
     return model, batchSize
@@ -2071,15 +2072,15 @@ def loadModelAndWeights(modelDir, outputDir):
 from keras.models import model_from_json
 def LoadNN(outputDir):
     ### Loading architecture and weights from file
-    print(Fore.BLUE + 'Loading architecture and weights')
+    print('Loading architecture and weights')
     architectureFileName = outputDir + '/architecture.json'
     with open(architectureFileName, 'r') as architectureFile:
         loadedModel = architectureFile.read()
-    print(Fore.GREEN + 'Loaded ' + architectureFileName)
+    print('Loaded ' + architectureFileName)
     model = model_from_json(loadedModel)
     weightsFileName = outputDir + '/weights.h5'
     model.load_weights(weightsFileName)
-    print(Fore.GREEN + 'Loaded ' + weightsFileName)
+    print('Loaded ' + weightsFileName)
     model.compile(loss = 'binary_crossentropy', weighted_metrics = ['accuracy']) #-> We don't care about the optimizer since we will only perform test, if loss and/or metric change save and then load them
     return model
 
@@ -2154,7 +2155,7 @@ def CalibrationCurves(wMC_test_signal, wMC_train_signal, yhat_test_signal, yhat_
     ScoresPltName = outputDir + '/CalibrationCurve_' + outputFileCommonName + '_' + str(unscaledMass) + '.png'
     plt.savefig(ScoresPltName)                                                                                                                                       
     #plt.show()
-    print(Fore.GREEN + 'Saved ' + ScoresPltName)
+    print('Saved ' + ScoresPltName)
     plt.clf()
 '''
 def PredictionAndAUC(X, Y):
@@ -2163,6 +2164,7 @@ def PredictionAndAUC(X, Y):
     roc_auc = auc(fpr, tpr)
     return roc_auc
 '''
+
 ### Features ranking
 import eli5
 from eli5.permutation_importance import get_score_importances
@@ -2329,13 +2331,13 @@ def plotHistory(patiences, series, feature, outputDir, outputFileCommonName):
     #plt.show()
     pltName = outputDir + '/' + feature + '_DifferentPatience_' + outputFileCommonName + '.png'
     plt.savefig(pltName)
-    print(Fore.GREEN + 'Saved ' + pltName)
+    print('Saved ' + pltName)
     plt.clf()
 
 from keras import backend
 from keras.callbacks import ReduceLROnPlateau, Callback, ModelCheckpoint
 def TrainNN(X_train, y_train, w_train, numberOfEpochs, batchSize, validationFraction, model, studyLearningRate):#, iLoop, loop):
-    #print(Fore.BLUE + 'Training the ' + NN + ' -- loop ' + str(iLoop) + ' out of ' + str(loop - 1))
+    #print('Training the ' + NN + ' -- loop ' + str(iLoop) + ' out of ' + str(loop - 1))
 
     ### If we want to stop the training when we don't have an improvement in $monitor after $patience epochs
     #earlyStoppingCB = EarlyStopping(verbose = True, patience = patienceValue, monitor = 'val_loss', restore_best_weights = True)
@@ -2489,21 +2491,21 @@ def computeDerivedVariables(variablesToDerive, dataFrame, signal, analysis):
             if analysis == 'merged':
                 newColumn = computeDeltaPhi(dataFrame['fatjet_phi'], dataFrame['lep2_phi'])
             elif analysis == 'resolved' and  'HVT' in signal:
-                newColumn = computeDeltaPhi(dataFrame['sigWJ1_phi'], dataFrame['lep2_phi'])
+                newColumn = computeDeltaPhi(dataFrame['sigVJ1_phi'], dataFrame['lep2_phi'])
             else:
-                newColumn = computeDeltaPhi(dataFrame['sigZJ1_phi'], dataFrame['lep2_phi'])
+                newColumn = computeDeltaPhi(dataFrame['sigVJ1_phi'], dataFrame['lep2_phi'])
         if variableToDerive == 'delta_phi_jet12':
             if 'HVT' in signal:
-                newColumn = computeDeltaPhi(dataFrame['sigWJ1_phi'], dataFrame['sigWJ2_phi'])
+                newColumn = computeDeltaPhi(dataFrame['sigVJ1_phi'], dataFrame['sigVJ2_phi'])
             else:
-                newColumn = computeDeltaPhi(dataFrame['sigZJ1_phi'], dataFrame['sigZJ2_phi'])
+                newColumn = computeDeltaPhi(dataFrame['sigVJ1_phi'], dataFrame['sigVJ2_phi'])
         if variableToDerive == 'delta_phi_lepjet':
             if analysis == 'merged':
                 newColumn = computeDeltaPhi(dataFrame['lep1_phi'], dataFrame['fatjet_phi'])            
             elif 'HVT' in signal:
-                newColumn = computeDeltaPhi(dataFrame['lep1_phi'], dataFrame['sigWJ2_phi'])            
+                newColumn = computeDeltaPhi(dataFrame['lep1_phi'], dataFrame['sigVJ2_phi'])            
             else:
-                newColumn = computeDeltaPhi(dataFrame['lep1_phi'], dataFrame['sigZJ2_phi'])            
+                newColumn = computeDeltaPhi(dataFrame['lep1_phi'], dataFrame['sigVJ2_phi'])            
         #dataFrame = dataFrame.assign({variableToDerive: newColumn})
         dataFrame[variableToDerive] = newColumn
     return dataFrame
@@ -2512,11 +2514,11 @@ def computeDerivedVariables(variablesToDerive, dataFrame, signal, analysis):
 ### Training the newtork with different learning rate and saving plots of learning rate, accuracy and loss vs epochs
 def studyLRpatience(X_train, y_train, w_train, numberOfEpochs, batchSize, validationFraction, model, outputDir, outputFileCommonName):
     patiences = [2, 5, 10, 15]                                                                                                                                    
-    print(Fore.RED + 'Training ' + str(len(patiences)) + ' pDNN with decreasing learning rate and different patience values')
+    print('Training ' + str(len(patiences)) + ' pDNN with decreasing learning rate and different patience values')
     lr_list, loss_list, acc_list, = list(), list(), list()
     for iPatience in range(len(patiences)):
         iPatienceValue = patiences[iPatience]
-        print(Fore.BLUE + 'NN number ' + str(iPatience) + ' out of ' + str(len(patiences) - 1) + ' -> patience = ' + str(iPatienceValue))
+        print('NN number ' + str(iPatience) + ' out of ' + str(len(patiences) - 1) + ' -> patience = ' + str(iPatienceValue))
         modelMetricsHistory, lrm_rates = TrainNN(X_train, y_train, w_train, iPatienceValue, numberOfEpochs, batchSize, validationFraction, model, True)#, iLoop, loop)
         #modelMetricsHistory, lrm_rates = TrainNN(X_train, y_train, w_train, iPatienceValue, numberOfEpochs, batchSize, validationFraction, NN, model, Loss, Optimizer, Metrics, iLoop, loop)
         loss_list.append(modelMetricsHistory.history['loss'])
