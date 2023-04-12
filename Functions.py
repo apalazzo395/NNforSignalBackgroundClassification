@@ -13,8 +13,7 @@ fileNameCreateScoresBranch = 'addScoreBranch.py'#'createScoresBranch.py'
 ### Reading the command line
 from argparse import ArgumentParser
 import sys
-#from colorama import init, Fore
-#init(autoreset = True)
+from termcolor import colored, cprint
 
 def ReadArgParser():
     parser = ArgumentParser(add_help = False)
@@ -377,9 +376,169 @@ def integral(y,x,bins):
         s=s+y[i]*(bins[i+1]-bins[i])
     return s
 
+import ROOT
+from ROOT import TCanvas, TH1F, TLatex, gPad, gStyle, TLegend, THStack
+
+def ATLASLabel(x,y,text,color=1):
+    """
+    An ATLAS label
+    """
+    l = TLatex()
+    l.SetNDC()
+    l.SetTextFont(72)
+    l.SetTextColor(color)
+    l.SetTextSize(0.06)
+    delx = 0.115*600*gPad.GetWh()/(330*gPad.GetWw())
+    l.DrawLatex(x,y,"ATLAS")
+    if text:
+        p = TLatex()
+        p.SetNDC()
+        p.SetTextSize(0.04)
+        p.SetTextFont(42)
+        p.SetTextColor(color)
+        p.DrawLatex(x+delx,y,text)
+
+def CustomLabel(x,y,text, color = 1):
+    """
+    A custom label
+    """
+    p = TLatex()
+    p.SetNDC()
+    #p.SetTextSize(0.06)
+    p.SetTextSize(0.04)
+    p.SetTextFont(42)
+    p.SetTextColor(color)
+    p.DrawLatex(x,y,text)
+
+def DrawVariablesHisto(dataFrame, outputDir, outputFileCommonName, analysis, channel, signal, background, preselectionCuts, backgroundsList, scaled = False): ### serve background?
+
+    dataFrameSignal = dataFrame[dataFrame['origin'] == signal]
+    dataFrameBkg = dataFrame[dataFrame['origin'] != signal]
+    dataFrameBkgDict = {}
+    for background in backgroundsList:
+        dataFrameBkgDict[background] = dataFrame[dataFrame['origin'] == background]
+    if 'VBF' in signal:
+        signalLabel = signal.replace('VBF', '')
+        dataFrame['origin'].replace(to_replace = [signal], value = [signalLabel], inplace = True)
+    else:
+        signalLabel = signal
+    featureLogX = ['fatjet_D2', 'fatjet_m', 'fatjet_pt', 'lep1_pt', 'lep2_pt', 'Zcand_pt']
+    legendText = 'analysis: ' + analysis + '\nchannel: ' + channel + '\nsignal: ' + signal + '\nbackground: ' + ', '.join(background)
+    if (preselectionCuts != 'none'):
+        legendText += '\npreselection cuts: ' + preselectionCuts
+
+    labelsDict = {'rnnVJ1_pt': r'RNN jet_{1} p_{T}', 'rnnVJ2_pt': r'RNN jet_{2} p_{T}', 'rnnVJ1_eta': r'RNN jet_{1} #eta', 'rnnVJ2_eta': r'RNN jet_{2} #eta', 'rnnVJ1_phi': r'RNN jet_{1} #phi', 'rnnVJ2_phi': r'RNN jet_{2} #phi', 'rnnVJ1_e': r'RNN jet_{1} E [GeV]', 'rnnVJ2_e': r'RNN jet_{2} E [GeV]', 'lep1_pt': r'lep_{1} p_{T} [GeV]', 'lep2_pt': r'lep_{2} p_{T} [GeV]', 'lep1_phi': r'lep_{1} #phi', 'lep2_phi': r'lep_{2} #phi', 'lep1_eta': r'lep_{1} #eta', 'lep2_eta': r'lep_{2} #eta', 'NJets': '# of jets', 'NLargeRJets': r'# of large-#it{R} jets', 'fatjet_pt': r'large-#it{R} jet p_{T} [GeV]', 'fatjet_eta': r'large-#it{R} jet #eta', 'fatjet_phi': r'large-#it{R} jet #phi', 'fatjet_pt': r'large-#it{R} jet m [GeV]', 'fatjet_D2': r'large-#it{R} jet D2', 'sigVJ1_pt': r'signal jet_{1} p_{T} [GeV]', 'sigVJ1_eta': r'signal jet_{1} #eta', 'sigVJ1_phi': r'signal jet_{1} #phi', 'sigVJ2_pt': r'signal jet_{2} p_{T} [GeV]', 'sigVJ2_eta': r'signal jet_{2} #eta', 'sigVJ2_phi': r'signal jet_{2} #phi', 'lep1_m': r'lep_{1} m [GeV]', 'lep2_m': r'lep_{2} m [GeV]', 'Zcand_pt': r'Z_{cand} p_{T} [GeV]', 'Zcand_m': r'Z_{cand} m [GeV]'}
+
+    binsDict = {'lep1_m': np.linspace(-0.03, 0.15, 6), 'lep1_pt': np.linspace(0, 2000, 51), 'lep1_eta': np.linspace(-3, 3, 51), 'lep1_phi': np.linspace(-3.5, 3.5, 51), 'lep2_m': np.linspace(-0.03, 0.15, 6), 'lep2_pt': np.linspace(0, 1200, 51), 'lep2_eta': np.linspace(-3, 3, 51), 'lep2_phi': np.linspace(-3.5, 3.5, 51), 'fatjet_m': np.linspace(0, 500, 51), 'fatjet_pt': np.linspace(0, 3000, 51), 'fatjet_eta': np.linspace(-3, 3, 51), 'fatjet_phi': np.linspace(-3.5, 3.5, 51), 'fatjet_D2': np.linspace(-0.5, 5.5, 51), 'Zcand_m': np.linspace(60, 130, 51), 'Zcand_pt': np.linspace(-20, 4000, 51), 'Zdijet_m': np.linspace(60, 140, 51), 'Zdijet_pt': 'auto', 'Zdijet_eta': np.linspace(-4, 4, 51), 'Zdijet_phi': np.linspace(-3.5, 3.5, 51), 'sigZJ1_m': np.linspace(0, 120, 51), 'sigZJ1_pt': np.linspace(0, 1000, 51), 'sigZJ1_eta': np.linspace(-3, 3, 51), 'sigZJ1_phi': np.linspace(-3.5, 3.5, 51), 'sigZJ2_m': np.linspace(0, 40, 51), 'sigZJ2_pt': np.linspace(0, 300, 51), 'sigZJ2_eta': np.linspace(-3, 3, 51), 'sigZJ2_phi': np.linspace(-3.5, 3.5, 51), 'DNNScore_W': np.linspace(0, 1, 51), 'DNNScore_Z': np.linspace(0, 1, 51), 'DNNScore_h': np.linspace(0, 1, 51), 'DNNScore_t': np.linspace(0, 1, 51), 'DNNScore_qg': np.linspace(0, 1, 51), 'delta_phi_lep12': np.linspace(-0.5, 3.5, 51), 'delta_phi_jetlep': np.linspace(-0.5, 3.5, 51), 'delta_phi_lepjet': np.linspace(-0.5, 3.5, 51), 'X_VV_merged': np.linspace(-50, 7000, 51)} # 'mass': 'auto', 'origin': 'auto',
+
+    originsLabelsDict = {'Radion': 'ggF Radion', 'HVTWZ': 'DY HVT WZ', 'RSG': 'ggF RSG', 'Zjets': r'#it{Z} + jets', 'ttbar': r'#it{t#bar{t}}', 'Diboson': 'Diboson', 'Wjets': r'#it{W} + jets', 'stop': 'single top'}
+    colorsDict = {'Zjets': ROOT.kGreen - 9, 'ttbar': ROOT.kBlue - 9, 'Diboson': ROOT.kGray, 'Wjets': ROOT.kMagenta + 1, 'stop': ROOT.kOrange}
+    dictHisto = {}
+    for feature in dataFrame.columns:
+        if 'Pass' in feature or feature == 'train_weight' or feature == 'origin' or feature == 'weight' or feature == 'isSignal': ### fare quello per origin!:
+            continue
+        print(feature)
+        statType = 'density'#'probability'
+        #hueType = dataFrame['isSignal']
+        hueType = dataFrameBkg['origin']#dataFrame['isSignal']
+        legendBool = True
+        if feature == 'origin' or feature == 'weight':
+            statType = 'count'
+            hueType = dataFrame['origin']
+            legendBool = False
+
+        dictHisto[feature] = {}
+
+        Canvas = TCanvas(feature, feature, 800, 600)
+        Canvas.cd()
+
+        Stack = THStack()
+        Legend = TLegend(.55, .75 - 4 * 0.025, .77, .85)
+        Legend.SetBorderSize(0)
+        Legend.SetTextFont(42)
+        Legend.SetTextSize(0.04) # 0.045
+        Legend.SetFillStyle(0)
+        totalIntegral = 0
+        minBin = min(min(dataFrameBkg[feature]), min(dataFrameSignal[feature]))
+        maxBin = max(max(dataFrameBkg[feature]), max(dataFrameSignal[feature]))
+
+        for background in backgroundsList:
+            if feature in binsDict.keys():
+                histo = TH1F('hist_' + feature + '_' + background, "", len(binsDict[feature]) + 1, binsDict[feature][0], binsDict[feature][len(binsDict[feature]) - 1])
+            else:
+                print('not in bin dictttttttttttttt')
+                histo = TH1F('hist_' + feature + '_' + background, "", 50, minBin, maxBin)
+            for value, weight in zip(dataFrameBkgDict[background][feature], dataFrameBkgDict[background]['weight']):
+                histo.Fill(value, weight)
+            dictHisto[feature][background] = histo
+            totalIntegral += histo.Integral()
+
+        for iBkg in reversed(range(len(backgroundsList))):
+            bkg = backgroundsList[iBkg]
+            dictHisto[feature][bkg].Scale(1 / totalIntegral)
+            dictHisto[feature][bkg].SetLineWidth(2)
+            #dictHisto[feature][bkg].SetLineColor(colorsDict[bkg])
+            dictHisto[feature][bkg].SetFillColor(colorsDict[bkg])
+            dictHisto[feature][bkg].SetLineWidth(2)
+            Legend.AddEntry(dictHisto[feature][bkg], originsLabelsDict[bkg], 'f')
+            Stack.Add(dictHisto[feature][bkg])
+
+        Stack.Draw("HIST")
+
+        if feature in binsDict.keys():
+            histoSignal = TH1F('hist_' + feature + '_' + signal, "", len(binsDict[feature]) + 1, binsDict[feature][0], binsDict[feature][len(binsDict[feature]) - 1])
+        else:
+            print('not in bin dictttttttttttttt')
+            histoSignal = TH1F('hist_' + feature + '_' + signal, "", 50, minBin, maxBin)
+        for value, weight in zip(dataFrameSignal[feature], dataFrameSignal['weight']):
+            histoSignal.Fill(value, weight)
+
+        histoSignal.Scale(1 / histoSignal.Integral())
+        histoSignal.SetLineColor(ROOT.kRed)
+        histoSignal.SetLineWidth(2)
+        Legend.AddEntry(histoSignal, originsLabelsDict[signal], 'l')
+        histoSignal.Draw("HIST,SAME")
+
+        Stack.SetMaximum(Stack.GetMaximum() + 2)
+
+        if feature == 'weight' or feature == 'origin':
+            Stack.GetYaxis().SetTitle('Counts')
+        else:
+            Stack.GetYaxis().SetTitle('Normalized yield')
+        if feature in labelsDict:
+            if scaled == True:
+                Stack.GetXaxis().SetTitle('Scaled ' + labelsDict[feature])
+            else:
+                Stack.GetXaxis().SetTitle(labelsDict[feature])
+        else:
+            print('Not in dictttt')
+            if scaled == True and feature != 'origin':
+                Stack.GetXaxis().SetTitle('Scaled ' + feature)
+            if scaled == False or feature == 'origin':
+                Stack.GetXaxis().SetTitle(feature)
+        Stack.SetTitle('SRs + ZCRs, ' + signalLabel + ', ' + analysis + ', ' + channel)
+
+        ATLASLabel(0.15, 0.82, "Internal")
+        CustomLabel(0.15, 0.74, "#sqrt{s} = 13 TeV, #int Ldt = 139 fb^{-1}")
+        Legend.Draw("SAME")
+        gStyle.SetOptStat(0)
+
+        Canvas.SetLogy()
+        pltName = outputDir + '/Histo_' + feature + '_' + outputFileCommonName + '.png'
+        Canvas.SaveAs(pltName)
+        cprint('Saved ' + pltName, 'green')
+        Canvas.Close()
+
+
+    dataFrame['isSignal'].replace(to_replace = ['Background', 'Signal'], value = [0, 1], inplace = True)
+    if 'VBF' in signal:
+        dataFrame['origin'].replace(to_replace = [signalLabel], value = [signal], inplace = True)
+    plt.close()
+    return
+
 #def DrawVariablesHisto(dataFrame, InputFeatures, outputDir, outputFileCommonName, jetCollection, analysis, channel, signal, background, preselectionCuts, scaled = False):
 #def DrawVariablesHisto(dataFrame, InputFeatures, outputDir, outputFileCommonName, analysis, channel, signal, background, preselectionCuts, scaled = False):
-def DrawVariablesHisto(dataFrame, outputDir, outputFileCommonName, analysis, channel, signal, background, preselectionCuts, scaled = False):
+def DrawVariablesHistoOld(dataFrame, outputDir, outputFileCommonName, analysis, channel, signal, background, preselectionCuts, scaled = False):
     '''
     ### Replacing '0' with 'Background' and '1' with 'Signal' in the 'isSignal' column
     dataFrame['isSignal'].replace(to_replace = [0, 1], value = ['Background', 'Signal'], inplace = True)

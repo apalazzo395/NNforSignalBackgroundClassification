@@ -186,5 +186,5 @@ cprint('Saved ' + logFileName, 'green')
 if drawPlots:
     histoOutputDir = outputDir + '/trainTestHistograms'
     checkCreateDir(histoOutputDir)
-    DrawVariablesHisto(dataFrame, histoOutputDir, fileCommonName, analysis, channel, signal, backgroundLegend, preselectionCuts, False)
+    DrawVariablesHisto(dataFrame, histoOutputDir, fileCommonName, analysis, channel, signal, backgroundLegend, preselectionCuts, backgroundsList, False)
     #DrawCorrelationMatrix(dataFrame, InputFeatures, outputDir, fileCommonName, analysis, channel, signal, backgroundLegend)

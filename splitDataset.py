@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import sys
 import shlex
-from colorama import init, Fore
-init(autoreset = True)
 
 #print(sys.executable, ' '.join(map(shlex.quote, sys.argv)))
 #from tensorflow.keras.utils import to_categorical
@@ -28,9 +26,8 @@ dfPath, signalsList, backgroundsList = ReadConfig(tag, analysis, signal) ### rem
 ### Loading input file
 inputDir = dfPath + analysis + '/' + channel + '/' + preselectionCuts + '/' + signal + '/' + background
 #inputDir = dfPath + analysis + '/' + channel + '/' + preselectionCuts + '/' + 'ggFandVBF/' + signal + '/' + background
-#fileCommonName = tag + '_' + jetCollection + '_' + analysis + '_' + channel + '_' + preselectionCuts + '_' + signal + '_' + background
 fileCommonName = tag + '_' + analysis + '_' + channel + '_' + preselectionCuts + '_' + signal + '_' + background
-print(Fore.GREEN + 'Loading' + inputDir + '/MixData_' + fileCommonName + '.pkl')
+cprint('Loading' + inputDir + '/MixData_' + fileCommonName + '.pkl', 'green')
 data = pd.read_pickle(inputDir + '/MixData_' + fileCommonName + '.pkl') 
 
 ### If not already existing, creating output directory
@@ -60,7 +57,7 @@ dataSetSignal = data_set[data_set['origin'] == signal]
 dataSetBackground = data_set[data_set['origin'] != signal]
 
 massesSignalList = sorted(list(set(list(dataSetSignal['mass']))))
-print(Fore.BLUE + 'Masses in the signal sample: ' + str(massesSignalList) + ' GeV (' + str(len(massesSignalList)) + ')')
+cprint('Masses in the signal sample: ' + str(massesSignalList) + ' GeV (' + str(len(massesSignalList)) + ')', 'blue')
 logFile.write('\nMasses in the signal sample: ' + str(massesSignalList) + ' GeV (' + str(len(massesSignalList)) + ')')
 '''
 statDict = {}
@@ -99,26 +96,28 @@ print(dataSetBackground.shape)
 ### Creating new column in the dataframes with train weight
 dataSetSignal, dataSetBackground, logString = ComputeTrainWeights(dataSetSignal, dataSetBackground, massesSignalList, outputDir, fileCommonName, analysis, channel, signal, backgroundLegend, preselectionCuts, drawPlots)
 if logString != '':
-    print(Fore.GREEN + logString)
+    cprint(logString, 'green')
     logFile.write(logString)
 
 ### Printing and saving information on events numbers 
 stringForBkgEvents = 'Number of background events: ' + str(dataSetBackground.shape[0]) + ' raw, ' + str(dataSetBackground['weight'].sum()) + ' with MC weights, ' + str(dataSetBackground['train_weight'].sum()) + ' with train weights'
-print(Fore.BLUE + stringForBkgEvents)
+cprint(stringForBkgEvents, 'blue')
 logFile.write('\n' + stringForBkgEvents)
+
 if(len(backgroundsList) > 1):
     for bkg in backgroundsList:
         dataSetSingleBackground = dataSetBackground[dataSetBackground['origin'] == bkg]
         stringToSaveBkg = '   ---> Number of ' + bkg + ' events: ' + str(dataSetSingleBackground.shape[0]) + ' raw, ' + str(dataSetSingleBackground['weight'].sum()) + ' with MC weights, ' + str(dataSetSingleBackground['train_weight'].sum()) + ' with train weights'
-        print(Fore.BLUE + stringToSaveBkg)
+        cprint(stringToSaveBkg, 'blue')
         logFile.write('\n' + stringToSaveBkg)
+
 stringForSignalEvents = 'Number of signal events: ' + str(dataSetSignal.shape[0]) + ' raw, ' + str(dataSetSignal['weight'].sum()) + ' with MC weights, ' + str(dataSetSignal['train_weight'].sum()) + ' with train weights'
-print(Fore.BLUE + stringForSignalEvents)
+cprint(stringForSignalEvents, 'blue')
 logFile.write('\n' + stringForSignalEvents)
 for signalMass in massesSignalList:
     dataSetSignalMass = dataSetSignal[dataSetSignal['mass'] == signalMass]
     stringToSaveSignal = '   ---> Number of signal events with mass ' + str(signalMass) + ' GeV: ' + str(dataSetSignalMass.shape[0]) + ' raw, ' + str(dataSetSignalMass['weight'].sum()) + ' with MC weights, ' + str(dataSetSignalMass['train_weight'].sum()) + ' with train weights'
-    print(Fore.BLUE + stringToSaveSignal)
+    cprint(stringToSaveSignal, 'blue')
     logFile.write('\n' + stringToSaveSignal)
 
 ### Concatening signal and background dataframes
@@ -132,6 +131,52 @@ dataFrame = dataFrame.assign(unscaledMass = dataFrame['mass'])
 
 ### Splitting data into train and test set
 data_train, data_test = train_test_split(dataFrame, train_size = trainingFraction)
+
+### Printing and saving information on events numbers 
+data_train_bkg = data_train[data_train['origin'] != signal]
+data_train_signal = data_train[data_train['origin'] == signal]
+data_test_bkg = data_test[data_test['origin'] != signal]
+data_test_signal = data_test[data_test['origin'] == signal]
+
+stringForTrainBkgEvents = 'Number of background events in train sample: ' + str(data_train_bkg.shape[0]) + ' raw, ' + str(data_train_bkg['weight'].sum()) + ' with MC weights, ' + str(data_train_bkg['train_weight'].sum()) + ' with train weights'
+cprint(stringForTrainBkgEvents, 'blue')
+logFile.write('\n' + stringForTrainBkgEvents)
+
+if(len(backgroundsList) > 1):
+    for bkg in backgroundsList:
+        dataTrainSingleBackground = data_train_bkg[data_train_bkg['origin'] == bkg]
+        stringToSaveSingleBkg = '   ---> Number of ' + bkg + ' events: ' + str(dataTrainSingleBackground.shape[0]) + ' raw, ' + str(dataTrainSingleBackground['weight'].sum()) + ' with MC weights, ' + str(dataTrainSingleBackground['train_weight'].sum()) + ' with train weights'
+        cprint(stringToSaveSingleBkg, 'blue')
+        logFile.write('\n' + stringToSaveSingleBkg)
+
+stringForTrainSignalEvents = 'Number of signal events in train sample: ' + str(data_train_signal.shape[0]) + ' raw, ' + str(data_train_signal['weight'].sum()) + ' with MC weights, ' + str(data_train_signal['train_weight'].sum()) + ' with train weights'
+cprint(stringForTrainSignalEvents, 'blue')
+logFile.write('\n' + stringForTrainSignalEvents)
+for signalMass in massesSignalList:
+    dataTrainSignalMass = data_train_signal[data_train_signal['mass'] == signalMass]
+    stringToSaveSignal = '   ---> Number of signal events with mass ' + str(signalMass) + ' GeV: ' + str(dataTrainSignalMass.shape[0]) + ' raw, ' + str(dataTrainSignalMass['weight'].sum()) + ' with MC weights, ' + str(dataTrainSignalMass['train_weight'].sum()) + ' with train weights'
+    cprint(stringToSaveSignal, 'blue')
+    logFile.write('\n' + stringToSaveSignal)
+
+stringForTestBkgEvents = 'Number of background events in test sample: ' + str(data_test_bkg.shape[0]) + ' raw, ' + str(data_test_bkg['weight'].sum()) + ' with MC weights, ' + str(data_test_bkg['train_weight'].sum()) + ' with train weights'
+cprint(stringForTestBkgEvents, 'blue')
+logFile.write('\n' + stringForTestBkgEvents)
+
+if(len(backgroundsList) > 1):
+    for bkg in backgroundsList:
+        dataTestSingleBackground = data_test_bkg[data_test_bkg['origin'] == bkg]
+        stringToSaveSingleBkg = '   ---> Number of ' + bkg + ' events: ' + str(dataTestSingleBackground.shape[0]) + ' raw, ' + str(dataTestSingleBackground['weight'].sum()) + ' with MC weights, ' + str(dataTestSingleBackground['train_weight'].sum()) + ' with train weights'
+        cprint(stringToSaveSingleBkg, 'blue')
+        logFile.write('\n' + stringToSaveSingleBkg)
+
+stringForTestSignalEvents = 'Number of signal events in test sample: ' + str(data_test_signal.shape[0]) + ' raw, ' + str(data_test_signal['weight'].sum()) + ' with MC weights, ' + str(data_test_signal['train_weight'].sum()) + ' with train weights'
+print(stringForTestSignalEvents, 'blue')
+logFile.write('\n' + stringForTestSignalEvents)
+for signalMass in massesSignalList:
+    dataTestSignalMass = data_test_signal[data_test_signal['mass'] == signalMass]
+    stringToSaveSignal = '   ---> Number of signal events with mass ' + str(signalMass) + ' GeV: ' + str(dataTestSignalMass.shape[0]) + ' raw, ' + str(dataTestSignalMass['weight'].sum()) + ' with MC weights, ' + str(dataTestSignalMass['train_weight'].sum()) + ' with train weights'
+    cprint(stringToSaveSignal, 'blue')
+    logFile.write('\n' + stringToSaveSignal)
 
 '''
 ### Slicing data train for statistic test
@@ -157,13 +202,13 @@ if drawPlots:
 ### Saving unscaled dataframes
 dataTrainName = outputDir + '/data_train_' + fileCommonName + '.pkl'
 data_train.to_pickle(dataTrainName)
-print(Fore.GREEN + 'Saved ' + dataTrainName)
+cprint('Saved ' + dataTrainName, 'green')
 logFile.write('\nSaved unscaled train dataframe in ' + dataTrainName)
 dataTestName = outputDir + '/data_test_' + fileCommonName + '.pkl'
 data_test.to_pickle(dataTestName)
-print(Fore.GREEN + 'Saved ' + dataTestName)
+cprint('Saved ' + dataTestName, 'green')
 logFile.write('\nSaved unscaled test dataframe in ' + dataTestName)
 
 ### Closing log file
 logFile.close()
-print(Fore.GREEN + 'Saved ' + outputDir + logFileName)
+cprint('Saved ' + outputDir + logFileName, 'green')
