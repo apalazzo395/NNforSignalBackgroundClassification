@@ -2325,6 +2325,7 @@ def PredictionAndAUC(X, Y):
     return roc_auc
 '''
 
+'''
 ### Features ranking
 import eli5
 from eli5.permutation_importance import get_score_importances
@@ -2344,7 +2345,8 @@ def FeaturesRanking(model, X_signal, X_bkg, deltasDict, inputFeatures, signal, a
     print('##### relative_feature_importances ######')
     deltasDict[unscaledMass] = relative_feature_importances
     print(deltasDict)
-    '''
+    
+    comment here
     if drawPlots:
         plt.clf()
         for iFeature in range(len(nputFeatures)):                                                                                                                    
@@ -2362,8 +2364,9 @@ def FeaturesRanking(model, X_signal, X_bkg, deltasDict, inputFeatures, signal, a
             plt.title(feature + ' - ' + signal + ' (1 TeV) ' + analysis + ' ' + channel)
             plt.savefig(outputDir + '/Histo_AUCdifference_' + feature + '_' + outputFileCommonName + '.png')
             plt.clf()
-    '''
+    comment here
     return deltasDict
+    '''
 
 def PlotFeaturesRanking(inputFeatures, deltasDict, outputDir, outputFileCommonName):
     fig, ax1 = plt.subplots(figsize = (13, 13))
