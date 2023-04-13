@@ -64,13 +64,13 @@ for i in inputFiles:
     
         weightedEvents = DF['weight'].sum()
         weightedTotalEvents += weightedEvents
-        cprint('Number of events in ' + inFile, '->\t' + str(Nevents) + ' (weighted: ' + str(weightedEvents) + ')', 'blue')
+        cprint('Number of events in ' + inFile + '->\t' + str(Nevents) + ' (weighted: ' + str(weightedEvents) + ')', 'blue')
         logFile.write(i + ' -> ' + str(Nevents) + ' events (weighted: ' + str(weightedEvents) + ')\n')
         outFile = dfPath + i + '_DF.pkl'
         
         ### Saving output dataframe
         DF.to_pickle(outFile)
-        print(Fore.GREEN + 'Saved ' + outFile)
+        cprint('Saved ' + outFile, 'green')
 
 cprint('Total events: ' + str(totalEvents) + ' (weighted: ' + str(weightedTotalEvents) + ')', 'blue')
 logFile.write('Number of total events: ' + str(totalEvents) + ' (weighted: ' + str(weightedTotalEvents) + ')\n')
