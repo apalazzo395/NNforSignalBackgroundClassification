@@ -23,7 +23,7 @@ def ReadArgParser():
     #parser.add_argument('-j', '--JetCollection', help = 'Jet collection: \'TCC\', \'UFO_PFLOW\'', type = str, default = 'UFO_PFLOW')
     parser.add_argument('-b', '--Background', help = 'Background: \'Zjets\', \'Wjets\', \'stop\', \'Diboson\', \'ttbar\' or \'all\' (in quotation mark separated by a space)', type = str, default = 'all')
     parser.add_argument('-t', '--TrainingFraction', help = 'Relative size of the training sample, between 0 and 1', default = 0.8)
-    parser.add_argument('-p', '--PreselectionCuts', help = 'Preselection cut', type = str)
+    parser.add_argument('-p', '--PreselectionCuts', help = 'Preselection cut', type = str, default = 'none')
     parser.add_argument('-h', '--hpOptimization', help = 'If 1 hyperparameters optimization will be performed', default = 0)
     parser.add_argument('-n', '--Nodes', help = 'Number of nodes of the (p)DNN, should always be >= nColumns and strictly positive', default = 48)#128) #32
     parser.add_argument('-l', '--Layers', help = 'Number of hidden layers of the (p)DNN', default = 2)#4) #2
@@ -79,8 +79,6 @@ def ReadArgParser():
     if args.TrainingFraction and (trainingFraction < 0. or trainingFraction > 1.):
         parser.error('Training fraction must be between 0 and 1')
     preselectionCuts = args.PreselectionCuts
-    if args.PreselectionCuts is None:
-        preselectionCuts = 'none'
     hpOptimization = bool(int(args.hpOptimization))
     numberOfNodes = int(args.Nodes)
     if args.Nodes and numberOfNodes < 1:
@@ -165,10 +163,10 @@ def ReadArgParser():
 import configparser, ast
 import shutil
 
-def ReadConfigSaveToPkl(tag):#, jetCollection):
+def ReadConfigSaveToPkl(tag):
     #configurationFile = 'Configuration_' + jetCollection + '_' + tag + '.ini'
     configurationFile = 'Configuration_' + tag + '.ini'
-    print('Reading configuration file: ' + configurationFile)
+    cprint('Reading configuration file: ' + configurationFile, 'green')
     config = configparser.ConfigParser()
     config.read(configurationFile)
     ntuplePath = config.get('config', 'ntuplePath')
@@ -176,7 +174,7 @@ def ReadConfigSaveToPkl(tag):#, jetCollection):
     dfPath = config.get('config', 'dfPath')
     dfPath += tag + '/'# + jetCollection + '/'
     rootBranchSubSample = ast.literal_eval(config.get('config', 'rootBranchSubSample'))
-    #print (format('Output directory: ' + dfPath), checkCreateDir(dfPath))
+    print (format('Output directory: ' + dfPath), checkCreateDir(dfPath))
     #shutil.copyfile(configurationFile, dfPath + configurationFile)
     return ntuplePath, inputFiles, dfPath, rootBranchSubSample
 
@@ -1029,8 +1027,9 @@ def DrawAccuracy(modelMetricsHistory, testAccuracy, patienceValue, outputDir, NN
     #plt.legend()
     #legend1 = plt.legend(['Training', 'Validation'], loc = 'lower right')
     legend1 = plt.legend(loc = 'center right')
-    #legendText = 'jet collection: ' + jetCollection + '\nanalysis: ' + analysis + '\nchannel: ' + channel + '\nsignal: ' + signal + '\nbackground: ' + str(bkg)
-    legendText = 'analysis: ' + analysis + '\nchannel: ' + channel + '\nsignal: ' + signal + '\nbackground: ' + str(bkg)
+    legendText = 'analysis: ' + analysis + '\nchannel: ' + channel + '\nsignal: ' + signal
+    if (str(bkg) != 'all'):
+        legendText += '\nbackground: ' + str(bkg)
     if (PreselectionCuts != 'none'):
         legendText += '\npreselection cuts: ' + PreselectionCuts
     #legendText += '\nTest accuracy: ' + str(round(testAccuracy, 2))
@@ -1069,7 +1068,9 @@ def DrawLoss(modelMetricsHistory, testLoss, patienceValue, outputDir, NN, analys
     #plt.legend(['Training', 'Validation'], loc = 'upper right')
     legend1 = plt.legend(loc = 'upper center')
     #legendText = 'jet collection: ' + jetCollection + '\nanalysis: ' + analysis + '\nchannel: ' + channel + '\npreselection cuts: ' + PreselectionCuts + '\nsignal: ' + signal + '\nbackground: ' + str(bkg)
-    legendText = 'analysis: ' + analysis + '\nchannel: ' + channel + '\npreselection cuts: ' + PreselectionCuts + '\nsignal: ' + signal + '\nbackground: ' + str(bkg)
+    legendText = 'analysis: ' + analysis + '\nchannel: ' + channel + '\nsignal: ' + signal
+    if (str(bkg) != 'all'):
+        legendText += '\nbackground: ' + str(bkg)
     if (PreselectionCuts != 'none'):
         legendText += '\npreselection cuts: ' + PreselectionCuts
     #legendText += '\nTest loss: ' + str(round(testLoss, 2))
