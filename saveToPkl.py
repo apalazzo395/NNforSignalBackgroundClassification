@@ -4,6 +4,7 @@
 import uproot
 #import uproot3
 from Functions import ReadArgParser, ReadConfigSaveToPkl
+from termcolor import colored, cprint
 
 ### Reading the command line
 tag = ReadArgParser()
