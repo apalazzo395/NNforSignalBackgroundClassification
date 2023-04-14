@@ -142,11 +142,33 @@ dataFrameBkg = dataFrameBkg.assign(mass = massesBkg)
 ### Concatening signal and background dataframes
 dataFrame = pd.concat([dataFrameSignal, dataFrameBkg], ignore_index = True)
 
+
+
+passDict = {'merged':{'ggF': {'Radion': ['Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_MergHP_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_MergHP_GGF_ZZ_01btag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_01btag_ZCR'],
+                            'RSG': ['Pass_VV2Lep_MergHP_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_MergLP_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_MergHP_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_MergLP_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_MergHP_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_MergHP_GGF_ZZ_01btag_ZCR', 'Pass_VV2Lep_MergLP_GGF_ZZ_01btag_ZCR'],
+                            'HVTWZ': ['Pass_VV2Lep_MergHP_GGF_WZ_SR', 'Pass_VV2Lep_MergLP_GGF_WZ_SR', 'Pass_VV2Lep_MergHP_GGF_WZ_ZCR', 'Pass_VV2Lep_MergLP_GGF_WZ_ZCR']},
+                    'VBF': {'Radion': ['Pass_VV2Lep_MergLP_VBF_ZZ_SR', 'Pass_VV2Lep_MergHP_VBF_ZZ_SR', 'Pass_VV2Lep_MergHP_VBF_ZZ_ZCR', 'Pass_VV2Lep_MergLP_VBF_ZZ_ZCR'],
+                            'RSG': ['Pass_VV2Lep_MergLP_VBF_ZZ_SR', 'Pass_VV2Lep_MergHP_VBF_ZZ_SR', 'Pass_VV2Lep_MergHP_VBF_ZZ_ZCR', 'Pass_VV2Lep_MergLP_VBF_ZZ_ZCR'],
+                            'HVTWZ': ['Pass_VV2Lep_MergHP_VBF_WZ_SR', 'Pass_VV2Lep_MergLP_VBF_WZ_SR', 'Pass_VV2Lep_MergHP_VBF_WZ_ZCR', 'Pass_VV2Lep_MergLP_VBF_WZ_ZCR']}
+                },
+            'resolved': {'ggF': {'Radion': ['Pass_VV2Lep_Res_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_Res_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_Res_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_Res_GGF_ZZ_01btag_ZCR'],
+                                 'RSG': ['Pass_VV2Lep_Res_GGF_ZZ_2btag_SR', 'Pass_VV2Lep_Res_GGF_ZZ_01btag_SR', 'Pass_VV2Lep_Res_GGF_ZZ_2btag_ZCR', 'Pass_VV2Lep_Res_GGF_ZZ_01btag_ZCR'],
+                                 'HVTWZ': ['Pass_VV2Lep_Res_GGF_WZ_SR', 'Pass_VV2Lep_Res_GGF_WZ_ZCR']},
+                         'VBF': {'Radion': ['Pass_VV2Lep_Res_VBF_ZZ_SR', 'Pass_VV2Lep_Res_VBF_ZZ_ZCR'],
+                                 'RSG': ['Pass_VV2Lep_Res_VBF_ZZ_SR', 'Pass_VV2Lep_Res_VBF_ZZ_ZCR'],
+                                 'HVTWZ': ['Pass_VV2Lep_Res_VBF_WZ_SR', 'Pass_VV2Lep_Res_VBF_WZ_ZCR']}
+                     }
+}
+
 ### Saving number of events for each origin
 for origin in inputOrigins:
     logFile.write('\nNumber of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
     cprint('Number of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)', 'blue')
-
+    dataFrameOrigin = dataFrame[dataFrame['origin'] == origin]
+    for passVar in passDict[analysis][channel][signal]:
+        dataSetSingleRegion = dataFrameOrigin[dataFrameOrigin[passVar] == True]
+        cprint('------- Number of events in region ' + passVar + ': ' + str(dataSetSingleRegion.shape[0]) + ' (raw), ' + str(sum(dataSetSingleRegion['weight'])) + ' (with MC weights)', 'blue')
+        logFile.write('\n------ Number of events in region ' + passVar + ': ' + str(dataSetSingleRegion.shape[0]) + ' (raw), ' + str(sum(dataSetSingleRegion['weight'])) + ' (with MC weights)')
 
 ### Computing derived variables
 dataFrame = computeDerivedVariables(variablesToDerive, dataFrame, signal, analysis)
@@ -166,7 +188,7 @@ dataFrame = dataFrame.query(selection)
 dataFrame = ShufflingData(dataFrame)
 
 ### Saving number of events for each origin after cutting on weight
-logFile.write('Number of events after applying cut \'' + selectionString + '\'')
+logFile.write('\nNumber of events after applying cut \'' + selectionString + '\':')
 cprint('Number of events after applying the cut', 'blue')
 for origin in inputOrigins:
     logFile.write('\nNumber of ' + origin + ' events: ' + str(dataFrame[dataFrame['origin'] == origin].shape[0]) + ' (raw), ' + str(sum(dataFrame[dataFrame['origin'] == origin]['weight'])) +' (with MC weights)')
@@ -174,7 +196,7 @@ for origin in inputOrigins:
 
 ### Saving the combined dataframe
 outputFileName = '/MixData_' + fileCommonName + '.pkl'
-dataFrame.to_pickle(outputDir + outputFileName)
+#dataFrame.to_pickle(outputDir + outputFileName)
 cprint('Saved ' + outputDir + outputFileName, 'green')
 logFile.write('\nSaved combined (signal and background) dataframe in ' + outputDir + outputFileName)
 
