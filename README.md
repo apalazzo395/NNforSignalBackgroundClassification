@@ -1,8 +1,7 @@
 Code to produce the (parametric) Deep Neural Network ((P)DNN) for the HDBS analysis.
 The necessary steps are described below. Each one of them corresponds to a python script in this project. Moreover, two .txt file and a python file imported by all the others are included and described below. A log file is saved at the end of each step.
 
-# Configuration_JETCOLLECTION_TAG.txt
-A different configuration file for each jet collection is stored.
+# Configuration_TAG.txt
 This text file contains the configuration parameters:
 - ntuplePath: path to the flat ntuples produced by the CxAODReader
 - dfPath: path to the pandas data frames into which the flat ntuples are converted by the saveToPkl.py file. At each step different subdirectories will be automatically created (if not already existing) where the results will be saved. The subdirectories will be created according to the type of data (jet collection, signal, background, analysis, channel, preselectionCuts) and neural network (DNN or PDNN) considered.
